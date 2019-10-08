@@ -446,14 +446,14 @@
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        2k
+                        2.1k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        8 分
+                        9 分
                     </div>
                     
                 
@@ -736,7 +736,10 @@ remove_if(_Predicate __pred)
           _M_erase(__first);
         __first = __next;
     }
-}</code></pre>
+}
+</code></pre>
+<p>对上述的<code>remove</code>的if去掉，在里面添加一个判断即可。</p>
+<p>使用如下</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
