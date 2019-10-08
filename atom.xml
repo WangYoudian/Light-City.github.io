@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://light-city.club/"/>
-  <updated>2019-10-08T06:28:58.762Z</updated>
+  <updated>2019-10-08T06:41:49.604Z</updated>
   <id>http://light-city.club/</id>
   
   <author>
@@ -18,10 +18,41 @@
   
   <entry>
     <title>C++ STL源码剖析之双向环形链表list</title>
+    <link href="http://light-city.club/2019/10/06/1list/"/>
+    <id>http://light-city.club/2019/10/06/1list/</id>
+    <published>2019-10-06T10:08:32.000Z</published>
+    <updated>2019-10-08T06:41:49.604Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL源码剖析之双向环形链表list&quot;&gt;&lt;a href=&quot;#C-STL源码剖析之双向环形链表list&quot; class=&quot;headerlink&quot; title=&quot;C++ STL源码剖析之双向环形链表list&quot;&gt;&lt;/a&gt;C++
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++ STL源码剖析之双向环形链表list</title>
     <link href="http://light-city.club/2019/10/06/list/"/>
     <id>http://light-city.club/2019/10/06/list/</id>
     <published>2019-10-06T10:08:32.000Z</published>
-    <updated>2019-10-08T06:28:58.762Z</updated>
+    <updated>2019-10-08T06:44:36.807Z</updated>
     
     <summary type="html">
     

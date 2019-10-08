@@ -446,14 +446,14 @@
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        2.8k
+                        3.3k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        12 分
+                        14 分
                     </div>
                     
                 
@@ -736,25 +736,14 @@ remove_if(_Predicate __pred)
           _M_erase(__first);
         __first = __next;
     }
-}
-</code></pre>
+}</code></pre>
 <p>对上述的<code>remove</code>的if去掉，在里面添加一个判断即可。</p>
 <p>使用如下：</p>
-<pre class=" language-c++"><code class="language-c++">bool isone(int one) {
-    return one==2;
-}
-int main() {
-    list<int> t;
-    t={3,4,0,2,0,10,10};
-    for(auto i:t) cout<<i<<" ";     // 3 4 0 2 0 10 10 
-    cout<<endl;
-    t.remove_if(isone);
-    for(auto i:t) cout<<i<<" ";  // 3 4 0 0 10 10 
-    cout<<endl;
-}</code></pre>
 <ul>
-<li>删除一系列节点</li>
-<li>删除所有节点，对应的函数<code>clear</code></li>
+<li><p>删除一系列节点</p>
+</li>
+<li><p>删除所有节点，对应的函数<code>clear</code></p>
+</li>
 </ul>
 <p><strong>（1）删除指定节点详细分析</strong></p>
 <pre class=" language-c++"><code class="language-c++">_M_erase(iterator __position)
@@ -768,8 +757,7 @@ _GLIBCXX_NOEXCEPT
     _M_get_Tp_allocator().destroy(std::__addressof(__n->_M_data));
 #endif
     _M_put_node(__n);        // 释放内存
-}
-</code></pre>
+}</code></pre>
 <p>其中<code>_M_unhook</code>实现在<code>gcc-4.9.1/libstdc++-v3/src/c++98/list.cc</code>，实现如下：</p>
 <pre class=" language-c++"><code class="language-c++">void _List_node_base::_M_unhook() _GLIBCXX_USE_NOEXCEPT
 {
@@ -1283,7 +1271,7 @@ protected:
 };
 </code></pre>
 <p>最后形成的图就是:</p>
-<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_iterator_design.png" alt="list's iterator_design"></p>
+<p>![list’s iterator_design](<a href="http://pxz2lirgn.bkt.clouddn.com/list's" target="_blank" rel="noopener">http://pxz2lirgn.bkt.clouddn.com/list's</a> iterator_design.png)</p>
 <p>所以如果求:</p>
 <pre class=" language-c++"><code class="language-c++">sizeof(list<int>)=16</code></pre>
 <p>原因是:</p>
@@ -1600,7 +1588,7 @@ struct _List_node : public __detail::_List_node_base
                 </a>
             </div>
             <br/>
-            <a  href="/2019/10/06/list/">
+            <a  href="/2019/10/06/1list/">
                     《C++ STL源码剖析之双向环形链表list》
             </a> 由
             <a href="http://light-city.club">
@@ -1900,9 +1888,10 @@ struct _List_node : public __detail::_List_node_base
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fas fa-chevron-left"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2019/10/06/1list/">
                     <div class="card-image">
@@ -1920,9 +1909,67 @@ struct _List_node : public __detail::_List_node_base
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/STL/" class="post-category">
+                                    STL
+                                </a>
+                            
+                            
                         </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/10/06/list/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="C++ STL源码剖析之双向环形链表list">
+                        
+                        <span class="card-title">C++ STL源码剖析之双向环形链表list</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            C++ STL源码剖析之双向环形链表list
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1948,67 +1995,6 @@ struct _List_node : public __detail::_List_node_base
                     
                     <a href="/tags/源码/">
                         <span class="chip bg-color">源码</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/09/24/duo-jin-cheng-yu-duo-xian-cheng-ji-chu/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="C/C++多线程编程基础">
-                        
-                        <span class="card-title">C/C++多线程编程基础</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            多线程问题排除Linux命令
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-09-24
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/C/" class="post-category">
-                                    C++
-                                </a>
-                            
-                            <a href="/categories/C/C/" class="post-category">
-                                    C
-                                </a>
-                            
-                            <a href="/categories/C/C/多线程/" class="post-category">
-                                    多线程
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C++</span>
-                    </a>
-                    
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C</span>
                     </a>
                     
                 </div>
