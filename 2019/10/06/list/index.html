@@ -1199,34 +1199,33 @@ InputIterator2 first2, InputIterator2 last2)
     return (first2!=last2);
 }</code></pre>
 <p>使用：</p>
-<pre class=" language-c++"><code class="language-c++">int main() {
-     vector<char> v1{'h','e','l','l','o'};
-    vector<char> v2{'h','e','l','l','o','o'};
-    vector<char> v3{'h','e','l','m','o'};
-    cout<<"v1=";
+<pre><code>int main() {
+     vector&lt;char&gt; v1{'h','e','l','l','o'};
+    vector&lt;char&gt; v2{'h','e','l','l','o','o'};
+    vector&lt;char&gt; v3{'h','e','l','m','o'};
+    cout&lt;&lt;"v1=";
     for(char i:v1)
-        cout<<i<<" ";
-    cout<<endl;
-    cout<<"v2=";
+        cout&lt;&lt;i&lt;&lt;" ";
+    cout&lt;&lt;endl;
+    cout&lt;&lt;"v2=";
     for(char i:v2)
-        cout<<i<<" ";
-    cout<<endl;
-    cout<<"v3=";
+        cout&lt;&lt;i&lt;&lt;" ";
+    cout&lt;&lt;endl;
+    cout&lt;&lt;"v3=";
     for(char i:v3)
-        cout<<i<<" ";
-    cout<<endl;
+        cout&lt;&lt;i&lt;&lt;" ";
+    cout&lt;&lt;endl;
 
     if(lexicographical_compare(v1.begin(),v1.end(),v2.begin(),v2.end()))
-        cout<<"v1 is less than v2 "<<endl;
+        cout&lt;&lt;"v1 is less than v2 "&lt;&lt;endl;
     else
-        cout<<"v2 is less than v1 "<<endl;
+        cout&lt;&lt;"v2 is less than v1 "&lt;&lt;endl;
 
     if(lexicographical_compare(v1.begin(),v1.end(),v3.begin(),v3.end()))
-        cout<<"v1 is less than v3 "<<endl;
+        cout&lt;&lt;"v1 is less than v3 "&lt;&lt;endl;
     else
-        cout<<"v3 is less than v1 "<<endl;
-}</code></pre>
-<p>其它重载操作符如下：</p>
+        cout&lt;&lt;"v3 is less than v1 "&lt;&lt;endl;
+}</code></pre><p>其它重载操作符如下：</p>
 <pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
 inline bool
 operator<(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) {
