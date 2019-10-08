@@ -1,0 +1,2303 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="C++ STL源码剖析之双向环形链表list, fight">
+    <meta name="description" content="C++ STL源码剖析之双向环形链表list0. 导语源码对应的版本为gcc-4.9.1
+1.listlist为双向环形链表，其结构为：
+
+自己绘制的图如下：
+
+双向环状链表从节点值为3开始插入，红色框表示最后一个节点(end()指向的节点">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>C++ STL源码剖析之双向环形链表list | 光城小屋</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">光城小屋</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">光城小屋</div>
+        <div class="logo-desc">
+            
+            Keep Looking,Don&#39;t Settle!
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+<li class="m-nav-item">
+			
+				<a href="/" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-home"></i>
+					
+					首页
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/tags" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-tags"></i>
+					
+					标签
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/categories" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-bookmark"></i>
+					
+					分类
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/archives" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-archive"></i>
+					
+					归档
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/about" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-user-circle"></i>
+					
+					关于
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/friends" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-address-book"></i>
+					
+					友情链接
+				</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/light-city" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/light-city" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        C++ STL源码剖析之双向环形链表list
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/C/">
+                                <span class="chip bg-color">C++</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/C/" class="post-category">
+                                C++
+                            </a>
+                        
+                            <a href="/categories/C/STL/" class="post-category">
+                                STL
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-10-06
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        3.3k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        14 分
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="C-STL源码剖析之双向环形链表list"><a href="#C-STL源码剖析之双向环形链表list" class="headerlink" title="C++ STL源码剖析之双向环形链表list"></a>C++ STL源码剖析之双向环形链表list</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0. 导语"></a>0. 导语</h2><p>源码对应的版本为<strong>gcc-4.9.1</strong></p>
+<h3 id="1-list"><a href="#1-list" class="headerlink" title="1.list"></a>1.list</h3><p>list为双向环形链表，其结构为：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_1.png" alt=""></p>
+<p>自己绘制的图如下：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_a.png" alt="list_all"></p>
+<p>双向环状链表从节点值为3开始插入，红色框表示最后一个节点(end()指向的节点)。黄色线条表示指向前驱节点，黑色线条表示指向后继节点。</p>
+<h3 id="1-1-list源码"><a href="#1-1-list源码" class="headerlink" title="1.1 list源码"></a>1.1 list源码</h3><h4 id="1-1-1-类结构"><a href="#1-1-1-类结构" class="headerlink" title="1.1.1 类结构"></a>1.1.1 类结构</h4><pre class=" language-c++"><code class="language-c++"> template<typename _Tp, typename _Alloc = std::allocator<_Tp> >
+ class list : protected _List_base<_Tp, _Alloc> 
+ {
+
+ }</code></pre>
+<p><code>list</code>继承<code>_List_base</code>。</p>
+<h4 id="1-1-2-双向环形链表实现"><a href="#1-1-2-双向环形链表实现" class="headerlink" title="1.1.2 双向环形链表实现"></a>1.1.2 双向环形链表实现</h4><p>【<strong>构造函数</strong>】</p>
+<p><strong>（1）不带任何元素的list</strong></p>
+<pre class=" language-c++"><code class="language-c++">explicit
+list(const allocator_type &__a) _GLIBCXX_NOEXCEPT: _Base(_Node_alloc_type(__a)) {}</code></pre>
+<p><strong>（2）带n个元素且赋予初值的list</strong></p>
+<pre class=" language-c++"><code class="language-c++">explicit list(size_type __n, const value_type &__value = value_type(),const allocator_type &__a = allocator_type()) : _Base(_Node_alloc_type(__a)) 
+{ _M_fill_initialize(__n, __value); }</code></pre>
+<p><strong>（3）从一个范围中进行初始化list</strong></p>
+<pre class=" language-c++"><code class="language-c++">template<typename _InputIterator>
+list(_InputIterator __first, _InputIterator __last,
+     const allocator_type &__a = allocator_type())
+        : _Base(_Node_alloc_type(__a)) {
+    // Check whether it's an integral type.  If so, it's not an iterator.
+    typedef typename std::__is_integer<_InputIterator>::__type _Integral;
+    _M_initialize_dispatch(__first, __last, _Integral());
+}</code></pre>
+<p>【<strong>创建节点</strong>】</p>
+<p>做的事情：创建一个新的节点并动态分配内存，返回节点。</p>
+<pre class=" language-c++"><code class="language-c++">_Node *_M_create_node(const value_type &__x) {
+    _Node *__p = this->_M_get_node();
+    __try
+    {
+        _M_get_Tp_allocator().construct
+                (std::__addressof(__p->_M_data), __x);
+    }
+    __catch(...)
+    {
+        _M_put_node(__p);
+        __throw_exception_again;
+    }
+    return __p;
+}</code></pre>
+<p>注意到里面有两个重要的函数<code>_M_get_node</code>与<code>_M_put_node</code>，我们来查看后发现这些方法来自基类，源码为：</p>
+<pre class=" language-c++"><code class="language-c++">_List_node<_Tp> * _M_get_node() { return _M_impl._Node_alloc_type::allocate(1); }
+
+void _M_put_node(_List_node<_Tp> *__p)   _GLIBCXX_NOEXCEPT
+{ _M_impl._Node_alloc_type::deallocate(__p, 1); }</code></pre>
+<p>对应的就是创建节点动态分配内存，若创建过程中抛出异常，则释放内存。</p>
+<p>【<strong>插入节点</strong>】</p>
+<p>插入节点包括：</p>
+<ul>
+<li>尾部插入n个指定节点值的节点，对应的函数<code>_M_fill_initialize</code></li>
+</ul>
+<p>在list的构造函数中使用：</p>
+<pre class=" language-c++"><code class="language-c++">explicit list(size_type __n, const value_type &__value = value_type(),const allocator_type &__a = allocator_type()) : _Base(_Node_alloc_type(__a)) 
+{ _M_fill_initialize(__n, __value); }</code></pre>
+<ul>
+<li>指定位置插入指定节点值的节点，对应的函数<code>_M_insert</code></li>
+</ul>
+<p>其中大家经常使用的<code>push_back</code>与<code>push_front</code>底层就是调用<code>_M_insert</code>函数。</p>
+<p>两者函数区别是：</p>
+<pre class=" language-c++"><code class="language-c++">this->_M_insert(end(), __x);  // push_back   尾部插入  
+this->_M_insert(begin(), __x); // push_front 头部插入</code></pre>
+<ul>
+<li><strong>双向环形链表插入函数</strong><code>_M_hook</code>   <strong>(最重要！！！)</strong></li>
+</ul>
+<p>像前面提到的<code>push_back</code>、<code>push_front</code>、<code>_M_insert</code>，还有<code>insert</code>都是使用最基础的双向链表插入函数<code>_M_hook</code>实现的。</p>
+<p><strong>下面来深入研究一下：</strong></p>
+<p>其中<code>_M_fill_initialize</code>源码如下：</p>
+<pre class=" language-c++"><code class="language-c++">void _M_fill_initialize(size_type __n, const value_type &__x) {
+    for (; __n; --__n)
+        push_back(__x);
+}</code></pre>
+<p>其中<code>push_back</code>源码如下：</p>
+<pre class=" language-c++"><code class="language-c++">void push_back(const value_type &__x) { this->_M_insert(end(), __x); }</code></pre>
+<p>其中<code>_M_insert</code>，在指定的位置插入初始值为x的节点。</p>
+<pre class=" language-c++"><code class="language-c++">void _M_insert(iterator __position, const value_type &__x) {
+    _Node *__tmp = _M_create_node(__x);
+    __tmp->_M_hook(__position._M_node);
+}</code></pre>
+<p>其中<code>_M_hook</code>实现在<code>gcc-4.9.1/libstdc++-v3/src/c++98/list.cc</code>中,当然<code>_List_node_base</code>的其他函数，例如：<code>_M_unhook</code>也在这个文件中。</p>
+<pre class=" language-c++"><code class="language-c++">// 在指定的位置前插入this指向的节点
+void_List_node_base::_M_hook(_List_node_base* const __position) _GLIBCXX_USE_NOEXCEPT
+{
+  this->_M_next = __position;        
+  this->_M_prev = __position->_M_prev;
+  __position->_M_prev->_M_next = this;
+  __position->_M_prev = this;
+}</code></pre>
+<p>所以上述细分为两个函数：我们把上述代码进行总结：</p>
+<p>（1）在指定的位置插入初始值为x的节点</p>
+<pre class=" language-c++"><code class="language-c++">void _M_insert(iterator __position, const value_type &__x) {
+    _Node *__tmp = _M_create_node(__x);
+    __tmp->_M_next = __position;            // 第一步
+    __tmp->_M_prev = __position->_M_prev;    // 第二步
+    __position->_M_prev->_M_next = __tmp;    // 第三步
+    __position->_M_prev = __tmp;            // 第四步
+}</code></pre>
+<p>这种插入是在指定位置前插入，(对应到代码就是)例如实现在指定<code>__position</code>节点为7前插入节点值9的节点(对应到代码就是__tmp)，下面阐述了具体的插入流程。</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_insert.png" alt="list_insert"></p>
+<p>（2）在末尾依次插入n个节点值为x的节点</p>
+<pre class=" language-c++"><code class="language-c++">void _M_fill_initialize(size_type __n, const value_type &__x) {
+    for (; __n; --__n)
+        _M_insert(end(), __x);
+}</code></pre>
+<p>对于上述的代码大家或许会联想到<code>insert</code>,它有三个。<code>insert</code>实现文件在<code>libstdc++-v3/include/bits/list.tcc</code>。</p>
+<ul>
+<li><strong>第一：在指定迭代器之前插入指定元素值节点。</strong></li>
+</ul>
+<p>实现是调用前面的<code>_M_hook</code>函数。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+typename list<_Tp, _Alloc>::iterator
+list<_Tp, _Alloc>::
+#if __cplusplus >= 201103L
+insert(const_iterator __position, const value_type& __x)
+#else
+insert(iterator __position, const value_type& __x)
+#endif
+{
+  _Node* __tmp = _M_create_node(__x);
+  __tmp->_M_hook(__position._M_const_cast()._M_node);
+  return iterator(__tmp);
+}</code></pre>
+<ul>
+<li><strong>第二：在指定迭代器之前插入n个指定节点值的节点。</strong></li>
+</ul>
+<pre class=" language-c++"><code class="language-c++">void insert(iterator __position, size_type __n, const value_type &__x) {
+    list __tmp(__n, __x, get_allocator());
+    splice(__position, __tmp);
+}</code></pre>
+<p>实现是先调用list构造函数，完成创建一个拥有n个指定节点值的list。</p>
+<pre class=" language-c++"><code class="language-c++">explicit list(size_type __n, const value_type &__value = value_type(),const allocator_type &__a = allocator_type()) : _Base(_Node_alloc_type(__a)) 
+{ _M_fill_initialize(__n, __value); }</code></pre>
+<p>然后使用<code>splice</code>函数完成从另一个list中来插入当前list。</p>
+<pre class=" language-c++"><code class="language-c++">void splice(iterator __position, list &__x)
+{
+    if (!__x.empty()) {
+        _M_check_equal_allocators(__x);
+
+        this->_M_transfer(__position._M_const_cast(),
+                          __x.begin(), __x.end());
+    }
+}</code></pre>
+<p>其中<code>_M_transfer</code>追踪代码，可以知道：</p>
+<pre class=" language-c++"><code class="language-c++">// Moves the elements from [first,last) before position.
+void
+_M_transfer(iterator __position, iterator __first, iterator __last) {
+    __position._M_node->_M_transfer(__first._M_node, __last._M_node);
+}</code></pre>
+<p>再次分析得到其来自list的基类<code>_List_node_base</code>，而<code>_M_transfer</code>实现文件在<code>gcc-4.9.1/libstdc++-v3/src/c++98/list.cc</code>中：</p>
+<pre class=" language-c++"><code class="language-c++">void _List_node_base::
+_M_transfer(_List_node_base * const __first,
+    _List_node_base * const __last) _GLIBCXX_USE_NOEXCEPT
+{
+  if (this != __last)
+  {
+      // Remove [first, last) from its old position.
+      __last->_M_prev->_M_next  = this;
+      __first->_M_prev->_M_next = __last;
+      this->_M_prev->_M_next    = __first;
+
+      // Splice [first, last) into its new position.
+      _List_node_base* const __tmp = this->_M_prev;
+      this->_M_prev                = __last->_M_prev;
+      __last->_M_prev              = __first->_M_prev;
+      __first->_M_prev             = __tmp;
+  }
+}</code></pre>
+<p>仍然是上述的图：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_a.png" alt="list_all"></p>
+<p>经过前面分析，我们知道<code>splice</code>是将上述图的所代表的整个list插入指定迭代器前面，例如，我们想要在下面两个节点前面插入，具体图形步骤如下：</p>
+<p><code>this</code>代表的节点为值为8的节点，下图描述的就是在节点10与节点8中间插入整个list。</p>
+<p><code>__last</code>代表的是红色框节点，该节点为<code>end()</code>指向的节点，我们是不需要该节点的，所以在后面处理中，会把该节点从整个list中去除掉。</p>
+<p><code>__first</code>代表的是图中节点值为3的节点。</p>
+<p><strong>第一步：先将最后一个有效节点，也就是红色框的前一个节点的next指针指向指定的节点8。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step1.png" alt=""></p>
+<p>对应代码为：</p>
+<pre><code>__last-&gt;_M_prev-&gt;_M_next  = this;    </code></pre><p><strong>第二步：<code>_last</code>的next指针指向自己。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step2.png" alt=""></p>
+<p>对应的代码为：</p>
+<pre><code>__first-&gt;_M_prev-&gt;_M_next = __last;</code></pre><p><strong>第三步：让指定迭代器之前的节点的nex指向原先list的第一个节点(<code>__first</code>)。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step3.png" alt=""></p>
+<p>对应的代码为：</p>
+<pre><code>this-&gt;_M_prev-&gt;_M_next    = __first;</code></pre><p><strong>第四步：保存指定迭代器的前驱节点(对应到哪图中的节点值为10的节点)。</strong></p>
+<pre><code>_List_node_base* const __tmp = this-&gt;_M_prev;</code></pre><p><strong>第五步：指定迭代器的前驱节点指向原list中实际最后一个节点(end()前一节点)。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step5.png" alt=""></p>
+<p>对应的代码为：</p>
+<pre><code>this-&gt;_M_prev                = __last-&gt;_M_prev;</code></pre><p><strong>第六步：让原list的最后一个节点(end()指向的节点)的prev指向自己。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step6.png" alt=""></p>
+<p>对应的代码为：</p>
+<pre><code>__last-&gt;_M_prev              = __first-&gt;_M_prev;</code></pre><p><strong>第七步：让原list第一个节点的prev指向第四步保存的节点。</strong></p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/step7.png" alt=""></p>
+<p>对应的代码为：</p>
+<pre><code>__first-&gt;_M_prev             = __tmp;</code></pre><p>这样经过以上七步操作，完成了在节点8与节点10之前插入一个list。</p>
+<ul>
+<li><strong>第三：从一个list范围把数据插入到指定迭代器前面。</strong></li>
+</ul>
+<pre class=" language-c++"><code class="language-c++">template<typename _InputIterator>
+void
+insert(iterator __position, _InputIterator __first,
+       _InputIterator __last) {
+    list __tmp(__first, __last, get_allocator());
+    splice(__position, __tmp);
+}</code></pre>
+<p>原理同上，只不过这个<code>__tmp</code>是调用另外一个构造函数。</p>
+<p>【<strong>删除节点</strong>】</p>
+<ul>
+<li>删除指定节点</li>
+</ul>
+<p>删除指定节点分为两个，第一个通过迭代器删除，第二个是通过元素值删除。</p>
+<p><strong>（1）通过迭代器删除，对应函数为erase</strong></p>
+<p>其中<code>pop_front</code>与<code>pop_back</code>、<code>erase</code>、<code>remove</code>底层实现基于<code>_M_erase</code>函数。</p>
+<pre class=" language-c++"><code class="language-c++">this->_M_erase(begin());     // pop_front 不断删除起点的元素
+this->_M_erase(iterator(this->_M_impl._M_node._M_prev)); // pop_back移除最后一个元素</code></pre>
+<p>在<code>libstdc++-v3/include/bits/list.tcc</code>中：</p>
+<pre class=" language-c++"><code class="language-c++">erase(iterator __position)
+#endif
+{
+  iterator __ret = iterator(__position._M_node->_M_next);
+  _M_erase(__position._M_const_cast());
+  return __ret;
+}</code></pre>
+<p><strong>（2）通过元素值删除，对应函数为remove</strong></p>
+<p>特殊情况处理，当删除元素的地址与迭代器的地址一样的时候，先保存起来，最后判断保存的迭代器是不是end()，如果不是，就删除掉。底层仍旧是通过<code>_M_erase</code>删除。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+void list<_Tp, _Alloc>::remove(const value_type& __value)
+{
+  iterator __first = begin();
+  iterator __last = end();
+  iterator __extra = __last;
+  while (__first != __last)
+  {
+      iterator __next = __first;
+      ++__next;
+      if (*__first == __value)
+        {
+          // _GLIBCXX_RESOLVE_LIB_DEFECTS
+          // 526. Is it undefined if a function in the standard changes
+          // in parameters?
+          if (std::__addressof(*__first) != std::__addressof(__value))
+        _M_erase(__first);
+          else
+        __extra = __first;
+        }
+      __first = __next;
+  }
+  if (__extra != __last)
+    _M_erase(__extra);
+}</code></pre>
+<p>除了这个remove外，还有一个是<code>remove_if</code>，根据条件来删除。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+template <typename _Predicate>
+void list<_Tp, _Alloc>::
+remove_if(_Predicate __pred)
+{
+    iterator __first = begin();
+    iterator __last = end();
+    while (__first != __last)
+    {
+        iterator __next = __first;
+        ++__next;
+        if (__pred(*__first))
+          _M_erase(__first);
+        __first = __next;
+    }
+}</code></pre>
+<p>对上述的<code>remove</code>的if去掉，在里面添加一个判断即可。</p>
+<p>使用如下：</p>
+<ul>
+<li><p>删除一系列节点</p>
+</li>
+<li><p>删除所有节点，对应的函数<code>clear</code></p>
+</li>
+</ul>
+<p><strong>（1）删除指定节点详细分析</strong></p>
+<pre class=" language-c++"><code class="language-c++">_M_erase(iterator __position)
+_GLIBCXX_NOEXCEPT
+{
+    __position._M_node->_M_unhook();
+    _Node *__n = static_cast<_Node *>(__position._M_node);
+#if __cplusplus >= 201103L
+    _M_get_Node_allocator().destroy(__n);
+#else
+    _M_get_Tp_allocator().destroy(std::__addressof(__n->_M_data));
+#endif
+    _M_put_node(__n);        // 释放内存
+}</code></pre>
+<p>其中<code>_M_unhook</code>实现在<code>gcc-4.9.1/libstdc++-v3/src/c++98/list.cc</code>，实现如下：</p>
+<pre class=" language-c++"><code class="language-c++">void _List_node_base::_M_unhook() _GLIBCXX_USE_NOEXCEPT
+{
+  _List_node_base* const __next_node = this->_M_next;    // 第一步：保存后继节点
+  _List_node_base* const __prev_node = this->_M_prev;    // 第二步：保存前驱节点
+  __prev_node->_M_next = __next_node;                    // 第三步：前驱节点的next指向后继节点
+  __next_node->_M_prev = __prev_node;                    // 第四步：后继节点的prev指向前驱节点
+}</code></pre>
+<p>例如：删除节点值为9的节点，第三与第四步图解：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/list_erase.png" alt="list_erase"></p>
+<p><strong>（2）删除一系列元素详细分析</strong></p>
+<pre class=" language-c++"><code class="language-c++">iterator
+#if __cplusplus >= 201103L
+erase(const_iterator __first, const_iterator __last) noexcept
+#else
+erase(iterator __first, iterator __last)
+#endif
+{
+    while (__first != __last)
+        __first = erase(__first);
+    return __last._M_const_cast();
+}</code></pre>
+<p>使用erase，删除给定迭代器范围内的数据。</p>
+<p><strong>（3）删除所有元素详细分析</strong></p>
+<p>清空元素，并初始化，回到list默认状态。</p>
+<pre class=" language-c++"><code class="language-c++">void clear()
+_GLIBCXX_NOEXCEPT
+{
+    _Base::_M_clear();
+    _Base::_M_init();
+}</code></pre>
+<p>其中<code>_M_clear</code>实现在：<code>libstdc++-v3/include/bits/list.tcc</code>中：</p>
+<pre class=" language-c++"><code class="language-c++">_List_base<_Tp, _Alloc>::
+_M_clear() _GLIBCXX_NOEXCEPT
+{
+  typedef _List_node<_Tp>  _Node;
+  _Node* __cur = static_cast<_Node*>(_M_impl._M_node._M_next);
+  while (__cur != &_M_impl._M_node)
+    {
+      _Node* __tmp = __cur;            // 保存节点
+      __cur = static_cast<_Node*>(__cur->_M_next);    // 往后遍历
+    #if __cplusplus >= 201103L
+      _M_get_Node_allocator().destroy(__tmp);
+    #else
+      _M_get_Tp_allocator().destroy(std::__addressof(__tmp->_M_data));
+    #endif
+      _M_put_node(__tmp);    // 释放内存
+    }
+}</code></pre>
+<p><code>_M_init</code>实现，全部指向自己即可。</p>
+<pre class=" language-c++"><code class="language-c++">void _M_init()
+_GLIBCXX_NOEXCEPT
+{
+    this->_M_impl._M_node._M_next = &this->_M_impl._M_node;
+    this->_M_impl._M_node._M_prev = &this->_M_impl._M_node;
+}</code></pre>
+<p>【<strong>元素访问</strong>】</p>
+<p>每个都实现了两个版本：引用与常引用。</p>
+<ul>
+<li>front 返回第一个元素</li>
+</ul>
+<pre class=" language-c++"><code class="language-c++">reference front()
+_GLIBCXX_NOEXCEPT
+{ return *begin(); }
+const_reference
+front() const
+_GLIBCXX_NOEXCEPT
+{ return *begin(); }</code></pre>
+<ul>
+<li>返回最后一个元素</li>
+</ul>
+<pre class=" language-c++"><code class="language-c++">reference
+back()
+_GLIBCXX_NOEXCEPT
+{
+    iterator __tmp = end();
+    --__tmp;
+    return *__tmp;
+}
+const_reference
+back() const
+_GLIBCXX_NOEXCEPT
+{
+    const_iterator __tmp = end();
+    --__tmp;
+    return *__tmp;
+}</code></pre>
+<p>【<strong>算法</strong>】</p>
+<ul>
+<li>unique</li>
+</ul>
+<p>从容器中的每个连续的相等元素组中除去除第一个元素外的所有元素。</p>
+<p>请注意，只有与<a href="http://www.cplusplus.com/list" target="_blank" rel="noopener">列表</a>容器紧邻的元素相比，该元素才从<a href="http://www.cplusplus.com/list" target="_blank" rel="noopener">列表</a>容器中删除。因此，此功能对于排序列表特别有用。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+template <typename _BinaryPredicate>
+  void
+  list<_Tp, _Alloc>::
+  unique(_BinaryPredicate __binary_pred)
+  {
+    iterator __first = begin();
+    iterator __last = end();
+    if (__first == __last)
+  return;
+    iterator __next = __first;
+    while (++__next != __last)
+  {
+    // 满足条件就删除
+    if (__binary_pred(*__first, *__next))
+       // 删除
+      _M_erase(__next);
+    else
+      __first = __next;
+    __next = __first;
+  }
+  }</code></pre>
+<p>举例如下：</p>
+<pre class=" language-c++"><code class="language-c++">// list::unique
+#include <iostream>
+#include <cmath>
+#include <list>
+
+// a binary predicate implemented as a function:
+bool same_integral_part (double first, double second)
+{ return ( int(first)==int(second) ); }
+
+// a binary predicate implemented as a class:
+struct is_near {
+  bool operator() (double first, double second)
+  { return (fabs(first-second)<5.0); }
+};
+
+int main ()
+{
+  double mydoubles[]={ 12.15,  2.72, 73.0,  12.77,  3.14,
+                       12.77, 73.35, 72.25, 15.3,  72.25 };
+  std::list<double> mylist (mydoubles,mydoubles+10);
+
+  mylist.sort();             //  2.72,  3.14, 12.15, 12.77, 12.77,
+                             // 15.3,  72.25, 72.25, 73.0,  73.35
+
+  mylist.unique();           //  2.72,  3.14, 12.15, 12.77
+                             // 15.3,  72.25, 73.0,  73.35
+
+  mylist.unique (same_integral_part);  //  2.72,  3.14, 12.15
+                                       // 15.3,  72.25, 73.0
+
+  mylist.unique (is_near());           //  2.72, 12.15, 72.25
+
+  std::cout << "mylist contains:";
+  for (std::list<double>::iterator it=mylist.begin(); it!=mylist.end(); ++it)
+    std::cout << ' ' << *it;
+  std::cout << '\n';
+
+  return 0;
+}</code></pre>
+<p>上述排序后会删除所有的重复元素，只剩下一个，而不排序只会删除重复且连续的元素。</p>
+<ul>
+<li>merge</li>
+</ul>
+<p>merge源码实现采用前面<code>_M_transfer</code>函数，假设现在有两个list，分别是list1与list2。list1中的元素与list2中的元素进行比较，如果list1中元素值小于list2中元素值，则对list1迭代器++，不进行任何操作，而如果list1中的元素值大于list2中的元素值，那么每次将list2这个小的元素对应的迭代器塞入<code>_M_transfer</code>函数中，通过这个函数完成向list1中刚才比较的迭代器前面插入list2较小的元素，那么最后所有元素都会被插入到list1中。</p>
+<p>当list1已经遍历完毕，而list2还没有遍历完毕，那么只需要执行一次<code>_M_transfer</code>，将list2链表从当前迭代器开始到最后的end插入到list1的末尾即可。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+void
+list<_Tp, _Alloc>::
+#if __cplusplus >= 201103L
+merge(list&& __x)
+#else
+merge(list& __x)
+#endif
+{
+  // _GLIBCXX_RESOLVE_LIB_DEFECTS
+  // 300. list::merge() specification incomplete
+  if (this != &__x)
+  {
+      _M_check_equal_allocators(__x);
+
+      iterator __first1 = begin();
+      iterator __last1 = end();
+      iterator __first2 = __x.begin();
+      iterator __last2 = __x.end();
+      while (__first1 != __last1 && __first2 != __last2)
+        if (*__first2 < *__first1)
+         {
+            iterator __next = __first2;
+            _M_transfer(__first1, __first2, ++__next);
+            __first2 = __next;
+         }
+        else
+          ++__first1;
+      if (__first2 != __last2)
+        _M_transfer(__last1, __first2, __last2);
+   }
+}</code></pre>
+<p>使用：</p>
+<pre class=" language-c++"><code class="language-c++">int main() {
+     list<int> l1 = {2,3,5,7};
+    list<int> l2 = {1,10,9,5};
+    l1.sort();
+    l2.sort();
+    l1.merge(l2);
+    for(auto i:l1) cout<<i<<" ";    // 1 2 3 5 5 7 9 10
+    return 0;
+}</code></pre>
+<ul>
+<li>sort</li>
+</ul>
+<p>由于STL本身的排序算法sort接受的输入迭代器是随机访问迭代器，但是双向list链表容器的访问方式是双向迭代器，因此，不能使用STL本身的排序算法sort，必须自己定义属于自己访问的排序算法。我们从源码的剖析中，可以看到该排序算法思想类似于归并排序。</p>
+<p>sort中splice调用的是：</p>
+<pre class=" language-c++"><code class="language-c++">void splice(const_iterator __position, list& __x, const_iterator __i) noexcept
+{ splice(__position, std::move(__x), __i); }</code></pre>
+<p>进一步分析：</p>
+<pre class=" language-c++"><code class="language-c++">void
+splice(iterator __position, list &__x, iterator __i)
+{
+    iterator __j = __i._M_const_cast();
+    ++__j;
+    if (__position == __i || __position == __j)
+        return;
+
+    if (this != &__x)
+        _M_check_equal_allocators(__x);
+
+    this->(__position._M_const_cast(),
+                      __i._M_const_cast(), __j);
+}</code></pre>
+<p>最后调用的是<code>_M_transfer</code>。</p>
+<p>在sort中还有一个函数<code>swap</code>，完成两个链表交换，实现代码在<code>gcc-4.9.1/libstdc++-v3/src/c++98/list.cc</code>中：</p>
+<pre class=" language-c++"><code class="language-c++">void
+_List_node_base::swap(_List_node_base& __x,
+          _List_node_base& __y) _GLIBCXX_USE_NOEXCEPT
+{
+      if ( __x._M_next != &__x )
+    {
+      if ( __y._M_next != &__y )
+        {
+          // Both __x and __y are not empty.
+          std::swap(__x._M_next,__y._M_next);
+          std::swap(__x._M_prev,__y._M_prev);
+          __x._M_next->_M_prev = __x._M_prev->_M_next = &__x;
+          __y._M_next->_M_prev = __y._M_prev->_M_next = &__y;
+        }
+      else
+        {
+              // __x is not empty, __y is empty.
+              __y._M_next = __x._M_next;
+              __y._M_prev = __x._M_prev;
+              __y._M_next->_M_prev = __y._M_prev->_M_next = &__y;
+              __x._M_next = __x._M_prev = &__x;
+            }
+        }
+      else if ( __y._M_next != &__y )
+        {
+          // __x is empty, __y is not empty.
+          __x._M_next = __y._M_next;
+          __x._M_prev = __y._M_prev;
+          __x._M_next->_M_prev = __x._M_prev->_M_next = &__x;
+          __y._M_next = __y._M_prev = &__y;
+        }
+}</code></pre>
+<p>具体的实现思路是，判断两个链表为空还是不为空，然后修改next指针与prev指针。</p>
+<p>下面来看看强大的sort：</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+void
+list<_Tp, _Alloc>::
+sort() {
+    // Do nothing if the list has length 0 or 1.
+    if (this->_M_impl._M_node._M_next != &this->_M_impl._M_node
+        && this->_M_impl._M_node._M_next->_M_next != &this->_M_impl._M_node) {
+        list __carry; // 辅助链表，用于从a中提取元素以及临时保存两个链表的合并结果
+        list __tmp[64]; // 保存着当前每一个归并层次的结果, i号链表保存的元素个数为2的i次方或者0
+        list *__fill = &__tmp[0]; // 表示当前最大归并排序的层次，while循环之后__fill变成log2(list.size())
+        list *__counter;
+
+        do {
+            __carry.splice(__carry.begin(), *this, begin()); //把当前链表的第一个节点放在carry链表头
+
+            for (__counter = &__tmp[0];
+                 __counter != __fill && !__counter->empty();
+                 ++__counter) {
+                __counter->merge(__carry);    // 两个有序链表合并
+                __carry.swap(*__counter); // 类似于交换链表carry和counter[i]内容    
+            }
+            __carry.swap(*__counter); // 类似于交换链表carry和counter[i]内容    
+            if (__counter == __fill)
+                ++__fill;
+        } while (!empty());
+        // 每两个进行归并，依次网上，直到最后*(__fill-1)保存最后的排序结果。然后交换到当前list中。
+        for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
+            __counter->merge(*(__counter - 1));
+        swap(*(__fill - 1)); 
+    }
+}</code></pre>
+<p>上述代码看起来比较难懂，在网上查找后发现，G2.9中：</p>
+<pre class=" language-c++"><code class="language-c++">template <class T, class Alloc>
+void list<T, Alloc> :: sort(){
+    // 判断链表是否为空或者只有一个元素
+    if(node->next == node || link_type(node->next)->next == node){
+        return;
+    }
+
+    list<T, Alloc> carry;
+    list<T, alloc> counter[64];
+    int fill = 0;
+    while(!empty()){
+        carry.splice(carry.begin(), *this, begin());
+        int i = 0;
+        while(i < fill && !counter[i].empty()){
+            counter[i].merge(carry);
+            carry.swap(counter[i++]);
+        }
+        carry.swap(counter[i]);
+        if(i == fill){
+            ++fill;
+        } 
+    }
+
+    for(int i = 1; i < fill; ++i){
+        counter[i].merge(counter[i-1]);
+    }
+    swap(counter[fill-1]);
+}</code></pre>
+<p>对应的外部实现是：</p>
+<pre class=" language-c++"><code class="language-c++">void sortList(list<int> &l) {
+    if (l.size() <= 1) {
+        return;
+    }
+    list<int> carry;       // 辅助链表，用于从a中提取元素以及临时保存两个链表的合并结果
+    list<int> counter[64]; // 保存着当前每一个归并层次的结果, i号链表保存的元素个数为2的i次方或者0
+    int fill = 0;          // 表示当前最大归并排序的层次，while循环之后fill变成log2(a.size())
+
+    while (!l.empty()) {
+        carry.splice(carry.begin(), l, l.begin()); // 将链表a中的第一个元素移动至carry开头
+        int i = 0;
+        // 从小往大不断合并非空归并层次直至遇到空层或者到达当前最大归并层次
+        while (i < fill && !counter[i].empty()) {
+            counter[i].merge(carry);    // 链表合并，结果链表是有序的，必须保证合并前两个链表是有序的
+            carry.swap(counter[i++]);   // 链表元素互换
+        }
+        carry.swap(counter[i]);
+        if (i == fill) {       // i到达当前最大归并层次，说明得增加一层
+            ++fill;
+        }
+    }
+
+    for (int i = 1; i < fill; ++i) {  // 将所有归并层次的结果合并得到最终结果counter[fill - 1]
+        counter[i].merge(counter[i - 1]);
+    }
+    l.swap(counter[fill - 1]);
+}</code></pre>
+<p>这一块可以参考</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/chenhanzhun/article/details/39337331" target="_blank" rel="noopener">https://blog.csdn.net/chenhanzhun/article/details/39337331</a></p>
+</blockquote>
+<p>上面给出了详细的过程图解。</p>
+<p>我们再次将G4.9转换对应的外部实现：</p>
+<pre class=" language-c++"><code class="language-c++">void sortList1(list<int> &l) {
+    typedef list<int> list;
+    if (l.size() <= 1) {
+        return;
+    }
+    list __carry;
+    list __tmp[64];
+    list *__fill = &__tmp[0];
+    list *__counter;
+    do {
+        __carry.splice(__carry.begin(), l, l.begin());
+        for (__counter = &__tmp[0];
+             __counter != __fill && !__counter->empty();
+             ++__counter) {
+            __counter->merge(__carry);
+            __carry.swap(*__counter);
+        }
+        __carry.swap(*__counter);
+        if (__counter == __fill) ++__fill;
+    } while (!l.empty());
+
+    for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
+        __counter->merge(*(__counter - 1));
+
+    l.swap(*(__fill - 1));
+}</code></pre>
+<p>使用：</p>
+<pre class=" language-c++"><code class="language-c++">int main() {
+    list<int> l = {7, 5, 8, 1};
+    cout << "===============排序前==============" << endl;
+    for (auto i:l) cout << i << " ";
+    cout << endl;
+    sortList1(l);
+    cout << "===============排序后==============" << endl;
+    for (auto i:l) cout << i << " ";
+    cout << endl;
+
+    return 0;
+}</code></pre>
+<p>【<strong>操作符重载</strong>】</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+inline bool
+operator==(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) {
+    typedef typename list<_Tp, _Alloc>::const_iterator const_iterator;
+    const_iterator __end1 = __x.end();
+    const_iterator __end2 = __y.end();
+
+    const_iterator __i1 = __x.begin();
+    const_iterator __i2 = __y.begin();
+    while (__i1 != __end1 && __i2 != __end2 && *__i1 == *__i2) {
+        ++__i1;
+        ++__i2;
+    }
+    return __i1 == __end1 && __i2 == __end2;
+}</code></pre>
+<p>实现思路是，迭代判断两个迭代器是否都抵达末尾。</p>
+<p>剩下就是其他的操作符重载，比较简单，就不阐述了。其中<code>lexicographical_compare</code>实现在<code>c++-v3/src/c++98/stl_algobase.h</code>中，该函数是按照字典序测试[frist1,last1)是否小于[first2,last2)。该函数使用opeartor&lt;或者是comp进行比较。其行为类似于：如果两个序列长度不同，并且短序列和长序列头部完全一样，例如example和examplee.那么，长度大的字典序比短序的大。</p>
+<pre class=" language-c++"><code class="language-c++">
+template <class InputIterator1, class InputIterator2>
+bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+InputIterator2 first2, InputIterator2 last2)
+{
+    while (first1!=last1)
+    {
+        if (first2==last2 || *first2<*first1) return false;
+        else if (*first1<*first2) return true;
+        ++first1; ++first2;
+    }
+    return (first2!=last2);
+}</code></pre>
+<p>使用：</p>
+<pre class=" language-c++"><code class="language-c++">int main() {
+     vector<char> v1{'h','e','l','l','o'};
+    vector<char> v2{'h','e','l','l','o','o'};
+    vector<char> v3{'h','e','l','m','o'};
+    cout<<"v1=";
+    for(char i:v1)
+        cout<<i<<" ";
+    cout<<endl;
+    cout<<"v2=";
+    for(char i:v2)
+        cout<<i<<" ";
+    cout<<endl;
+    cout<<"v3=";
+    for(char i:v3)
+        cout<<i<<" ";
+    cout<<endl;
+
+    if(lexicographical_compare(v1.begin(),v1.end(),v2.begin(),v2.end()))
+        cout<<"v1 is less than v2 "<<endl;
+    else
+        cout<<"v2 is less than v1 "<<endl;
+
+    if(lexicographical_compare(v1.begin(),v1.end(),v3.begin(),v3.end()))
+        cout<<"v1 is less than v3 "<<endl;
+    else
+        cout<<"v3 is less than v1 "<<endl;
+}</code></pre>
+<p>其它重载操作符如下：</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp, typename _Alloc>
+inline bool
+operator<(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) {
+    return std::lexicographical_compare(__x.begin(), __x.end(),
+                                        __y.begin(), __y.end());
+}
+
+/// Based on operator==
+template<typename _Tp, typename _Alloc>
+inline bool
+operator!=(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) { return !(__x == __y); }
+
+/// Based on operator<
+template<typename _Tp, typename _Alloc>
+inline bool
+operator>(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) { return __y < __x; }
+
+/// Based on operator<
+template<typename _Tp, typename _Alloc>
+inline bool
+operator<=(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) { return !(__y < __x); }
+
+/// Based on operator<
+template<typename _Tp, typename _Alloc>
+inline bool
+operator>=(const list<_Tp, _Alloc> &__x, const list<_Tp, _Alloc> &__y) { return !(__x < __y); }</code></pre>
+<h3 id="1-2-list基类源码"><a href="#1-2-list基类源码" class="headerlink" title="1.2 list基类源码"></a>1.2 list基类源码</h3><p><code>_list_base</code>中有一个结构体:<code>_List_impl</code>,而<code>_List_impl</code>中有一个<code>List_node_base</code>。</p>
+<pre class=" language-c++"><code class="language-c++">class _List_base
+{
+protected:
+  typedef typename _Alloc::template rebind<_List_node<_Tp> >::other
+    _Node_alloc_type;
+
+  typedef typename _Alloc::template rebind<_Tp>::other _Tp_alloc_type;
+
+  struct _List_impl
+  : public _Node_alloc_type
+  {
+    __detail::_List_node_base _M_node;
+
+    _List_impl()
+    : _Node_alloc_type(), _M_node()
+    { }
+
+    _List_impl(const _Node_alloc_type& __a) _GLIBCXX_NOEXCEPT
+    : _Node_alloc_type(__a), _M_node()
+    { }
+
+    #if __cplusplus >= 201103L
+    _List_impl(_Node_alloc_type&& __a) _GLIBCXX_NOEXCEPT
+    : _Node_alloc_type(std::move(__a)), _M_node()
+    { }
+    #endif
+  };
+
+  _List_impl _M_impl;
+};
+</code></pre>
+<p>最后形成的图就是:</p>
+<p>![list’s iterator_design](<a href="http://pxz2lirgn.bkt.clouddn.com/list's" target="_blank" rel="noopener">http://pxz2lirgn.bkt.clouddn.com/list's</a> iterator_design.png)</p>
+<p>所以如果求:</p>
+<pre class=" language-c++"><code class="language-c++">sizeof(list<int>)=16</code></pre>
+<p>原因是:</p>
+<p><code>list</code>的sizeof为1,所以sizeof来源于基类<code>_list_base</code>,而<code>_list_base</code>中有一个结构体:<code>_List_impl</code>,而<code>_List_impl</code>中有一个<code>_List_node_base</code>.</p>
+<p>我们知道<code>_List_node_base</code>,里面有两个指针,在64位上,每个为8字节,共16字节。</p>
+<h2 id="2-list’s-Iterator剖析"><a href="#2-list’s-Iterator剖析" class="headerlink" title="2.list’s Iterator剖析"></a>2.list’s Iterator剖析</h2><h3 id="2-1-iterator"><a href="#2-1-iterator" class="headerlink" title="2.1 iterator"></a>2.1 iterator</h3><p>list的iterator定义</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Tp>
+struct _List_iterator
+{
+  typedef _List_iterator<_Tp>                _Self;
+  typedef _List_node<_Tp>                    _Node;
+
+  typedef ptrdiff_t                          difference_type;
+  typedef std::bidirectional_iterator_tag    iterator_category;
+  typedef _Tp                                value_type;
+  typedef _Tp*                               pointer;
+  typedef _Tp&                               reference;
+
+   // The only member points to the %list element.
+   __detail::_List_node_base* _M_node;         
+   //  _List_node(节点的数据部分) -> _List_node_base(前指针与后指针)
+
+  _List_iterator() _GLIBCXX_NOEXCEPT
+  : _M_node() { }
+
+  explicit
+  _List_iterator(__detail::_List_node_base* __x) _GLIBCXX_NOEXCEPT
+  : _M_node(__x) { }
+
+  _Self
+  _M_const_cast() const _GLIBCXX_NOEXCEPT
+  { return *this; }
+
+  // The only member points to the %list element.
+  __detail::_List_node_base* _M_node;
+};
+</code></pre>
+<p>内部重载函数:</p>
+<pre class=" language-c++"><code class="language-c++">// Must downcast from _List_node_base to _List_node to get to _M_data.
+// 重载*操作符
+reference operator*() const _GLIBCXX_NOEXCEPT
+{ 
+    return static_cast<_Node*>(_M_node)->_M_data; 
+}
+
+// 重载->操作符
+pointer operator->() const _GLIBCXX_NOEXCEPT
+{ 
+    return std::__addressof(static_cast<_Node*>(_M_node)->_M_data); 
+}
+
+// 重载前置++操作符  ++i
+_Self& operator++() _GLIBCXX_NOEXCEPT   
+{ 
+    _M_node = _M_node->_M_next;
+    return *this;
+}
+
+// 重载后置++操作符 i++
+_Self operator++(int) _GLIBCXX_NOEXCEPT
+{
+    _Self __tmp = *this;             // 记录原值  *调用的是拷贝构造函数
+    _M_node = _M_node->_M_next;         // 进行操作
+    return __tmp;                     // 返回原值
+}
+
+// 重载前置--操作符  --i
+_Self& operator--() _GLIBCXX_NOEXCEPT
+{
+    _M_node = _M_node->_M_prev;
+    return *this;
+}
+// 重载后置--操作符  --i
+_Self operator--(int) _GLIBCXX_NOEXCEPT
+{
+    _Self __tmp = *this;
+    _M_node = _M_node->_M_prev;
+    return __tmp;
+}
+// 重载++操作符
+bool operator==(const _Self& __x) const _GLIBCXX_NOEXCEPT
+{ 
+    return _M_node == __x._M_node; 
+}
+// 重载!=操作符
+bool operator!=(const _Self& __x) const _GLIBCXX_NOEXCEPT
+{ 
+    return _M_node != __x._M_node; 
+}</code></pre>
+<h3 id="2-2-结点设计"><a href="#2-2-结点设计" class="headerlink" title="2.2 结点设计"></a>2.2 结点设计</h3><p>iterator内部的<code>_List_node</code>,这里可以得到继承自<code>_List_node_base</code>.</p>
+<p><code>_List_node</code>放数据部分</p>
+<p><code>_List_node_base</code>放前后指针</p>
+<pre class=" language-c++"><code class="language-c++">/// An actual node in the %list.
+template<typename _Tp>
+struct _List_node : public __detail::_List_node_base
+{
+  ///< User's data.
+  _Tp _M_data;
+
+#if __cplusplus >= 201103L
+  template<typename... _Args>
+    _List_node(_Args&&... __args)
+: __detail::_List_node_base(), _M_data(std::forward<_Args>(__args)...) 
+    { }
+#endif
+};</code></pre>
+<p><code>_List_node_base</code>代码:</p>
+<pre class=" language-c++"><code class="language-c++">namespace __detail
+{
+    _GLIBCXX_BEGIN_NAMESPACE_VERSION
+    /// Common part of a node in the %list. 
+    struct _List_node_base
+    {
+      _List_node_base* _M_next;
+      _List_node_base* _M_prev;
+
+      static void
+      swap(_List_node_base& __x, _List_node_base& __y) _GLIBCXX_USE_NOEXCEPT;
+
+      void
+      _M_transfer(_List_node_base* const __first,
+          _List_node_base* const __last) _GLIBCXX_USE_NOEXCEPT;
+
+      void
+      _M_reverse() _GLIBCXX_USE_NOEXCEPT;
+
+      void
+      _M_hook(_List_node_base* const __position) _GLIBCXX_USE_NOEXCEPT;
+
+      void
+      _M_unhook() _GLIBCXX_USE_NOEXCEPT;
+    };
+
+    _GLIBCXX_END_NAMESPACE_VERSION
+} // namespace detail</code></pre>
+<p>迭代器在设计的时候,总是保持前闭后开原则,例如iter-&gt;begin()指向第一个元素,iter-&gt;end()指向实际最后一个元素的下一个元素,故最后的设计刻意在环形list尾部加一个空白结点,用以符合STL前闭后开原则.</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+	   <div align="center"><img src="http://pxz2lirgn.bkt.clouddn.com/wechat.jpg" /></div> 
+        <p class="notice" align="center">更多内容，订阅公众号</p>
+<br/>
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <a  href="/2019/10/06/list/">
+                    《C++ STL源码剖析之双向环形链表list》
+            </a> 由
+            <a href="http://light-city.club">
+                light-city
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="https://unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'WyHVjPB40WFwjH0cgX5a5mlY-gzGzoHsz',
+        appKey: 'CF3cbOKRONnoKlvFWdLIy6j6',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '一起来畅言吧~~~'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2019/10/06/list/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="C++ STL源码剖析之双向环形链表list">
+                        
+                        <span class="card-title">C++ STL源码剖析之双向环形链表list</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            C++ STL源码剖析之双向环形链表list
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/STL/" class="post-category">
+                                    STL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/09/24/duo-jin-cheng-yu-duo-xian-cheng-ji-chu/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="C/C++多线程编程基础">
+                        
+                        <span class="card-title">C/C++多线程编程基础</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            多线程问题排除Linux命令
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-09-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/C/" class="post-category">
+                                    C
+                                </a>
+                            
+                            <a href="/categories/C/C/多线程/" class="post-category">
+                                    多线程
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">年份</span>
+            <a href="http://light-city.club" target="_blank">light-city</a>
+            |&nbsp;Powered by&nbsp;<a href="http://light-city.club/" target="_blank">light-city</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">5k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    window.setTimeout("siteTime()", 1000);
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/light-city" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="https://www.zhihu.com/people/francis-52-23/activities" class="tooltipped" target="_blank" data-tooltip="关注我的知乎: https://www.zhihu.com/people/francis-52-23/activities" data-position="top" data-delay="50">
+        <i class="fab fa-zhihu1">知</i>
+    </a>
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i["DaoVoiceObject"] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            a.charset = "utf-8";
+            m.parentNode.insertBefore(a, m)
+        })(window, document, "script", ('https:' == document.location.protocol ? 'https:' : 'http:') +
+            "//widget.daovoice.io/widget/6984b559.js", "daovoice")
+        daovoice('init', {
+            app_id: ""
+        });
+        daovoice('update');
+    </script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+
+</body>
+
+</html>
