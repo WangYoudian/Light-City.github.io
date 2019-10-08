@@ -443,14 +443,14 @@
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        936
+                        1.1k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        3 分
+                        4 分
                     </div>
                     
                 
@@ -507,20 +507,19 @@ int main() {
 <p>但是，<strong>函数的”template 参数推导机制”推导的只是参数，无法推导函数的返回值类型。万一需要推导函数的传回值，就无能为力了</strong>。因此，我们引出下面的方法。</p>
 <h2 id="2-声明内嵌型别"><a href="#2-声明内嵌型别" class="headerlink" title="2.声明内嵌型别"></a>2.声明内嵌型别</h2><p><strong>迭代器所指对象的型别，称之为迭代器的 value type。</strong></p>
 <p>尽管在 func_impl 中我们可以把 T 作为函数的返回值，但是问题是用户需要调用的是 func。</p>
-<pre class=" language-c++"><code class="language-c++">template <class I, class T>
+<pre><code>template &lt;class I, class T&gt;
 T func_impl(I iter, T t) {
         T tmp; // 这里就是迭代器所指物的类别
         // ... 功能实现
 }
-template <class T>
+template &lt;class T&gt;
 (*T) func(T t) { // !!!Wrong code
     return func_impl(t, *t); // forward the task to func_impl
 }
 int main() {
     int i  =10;
-    cout<<func(&i)<<endl; // !!! Can’t pass compile
-}</code></pre>
-<p>如果去编译上述代码，编译失败！</p>
+    cout&lt;&lt;func(&amp;i)&lt;&lt;endl; // !!! Can’t pass compile
+}</code></pre><p>如果去编译上述代码，编译失败！</p>
 <p>这个问题解决起来也不难，声明内嵌型别似乎是个好主意，这样我们就可以直接获取。只要做一个 iterator，然后在定义的时候为其指向的对象类型制定一个别名，就好了，像下面这样：</p>
 <pre class=" language-c++"><code class="language-c++">template <class T>
 struct MyIter {
@@ -1365,7 +1364,7 @@ int main() {
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">5.8k</span>&nbsp;字
+                class="white-color">6k</span>&nbsp;字
             
             
             
