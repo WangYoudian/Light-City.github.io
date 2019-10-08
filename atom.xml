@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://light-city.club/"/>
-  <updated>2019-10-08T08:24:29.763Z</updated>
+  <updated>2019-10-08T13:28:08.418Z</updated>
   <id>http://light-city.club/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++ STL 源码剖析之 Traits 编程技法</title>
+    <link href="http://light-city.club/2019/10/07/traits/"/>
+    <id>http://light-city.club/2019/10/07/traits/</id>
+    <published>2019-10-07T13:28:32.000Z</published>
+    <updated>2019-10-08T13:28:08.418Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL-源码剖析之-Traits-编程技法&quot;&gt;&lt;a href=&quot;#C-STL-源码剖析之-Traits-编程技法&quot; class=&quot;headerlink&quot; title=&quot;C++ STL 源码剖析之 Traits 编程技法&quot;&gt;&lt;/a&gt;C++ STL 源码剖析之
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
   
   <entry>
     <title>C++ STL源码剖析之双向环形链表list</title>

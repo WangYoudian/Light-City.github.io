@@ -4,11 +4,10 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="C/C++多线程编程基础, fight">
-    <meta name="description" content="C/C++多线程编程基础1.基础问题
-某个线程崩溃，会导致进程退出吗?或者说进程中某个线程崩溃，是否会对其他线程造成影响？
+    <meta name="keywords" content="C++ STL 源码剖析之 Traits 编程技法, fight">
+    <meta name="description" content="C++ STL 源码剖析之 Traits 编程技法0.导语在 STL 编程中，容器和算法是独立设计的，即数据结构和算法是独立设计的，连接容器和算法的桥梁就是迭代器了，迭代器使其独立设计成为可能。如下图所示：
 
-答：一般来说，每个线程都是独立执行的单位，每个线程都有自己的上下文堆栈，一个线程的的崩溃不会对其他线程造成影响。但">
+上图给出了 STL 的目标就是">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +15,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>C/C++多线程编程基础 | 光城小屋</title>
+    <title>C++ STL 源码剖析之 Traits 编程技法 | 光城小屋</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -287,13 +286,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        C/C++多线程编程基础
+                        C++ STL 源码剖析之 Traits 编程技法
                     </div>
                 </div>
             </div>
@@ -409,8 +408,8 @@
                                 <span class="chip bg-color">C++</span>
                             </a>
                         
-                            <a href="/tags/C/">
-                                <span class="chip bg-color">C</span>
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
                             </a>
                         
                     </div>
@@ -425,12 +424,8 @@
                                 C++
                             </a>
                         
-                            <a href="/categories/C/C/" class="post-category">
-                                C
-                            </a>
-                        
-                            <a href="/categories/C/C/多线程/" class="post-category">
-                                多线程
+                            <a href="/categories/C/STL/" class="post-category">
+                                STL
                             </a>
                         
                     </div>
@@ -441,21 +436,21 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-09-24
+                    2019-10-07
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1.1k
+                        936
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        4 分
+                        3 分
                     </div>
                     
                 
@@ -471,181 +466,194 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="C-C-多线程编程基础"><a href="#C-C-多线程编程基础" class="headerlink" title="C/C++多线程编程基础"></a>C/C++多线程编程基础</h1><h2 id="1-基础问题"><a href="#1-基础问题" class="headerlink" title="1.基础问题"></a>1.基础问题</h2><ul>
-<li><strong>某个线程崩溃，会导致进程退出吗?或者说进程中某个线程崩溃，是否会对其他线程造成影响？</strong></li>
-</ul>
-<p>答：一般来说，每个线程都是独立执行的单位，每个线程都有自己的上下文堆栈，一个线程的的崩溃不会对其他线程造成影响。但是通常情况下，一个线程崩溃会产生一个进程内的错误，例如，在 Linux 操作系统中，可能会产生一个 <strong>Segment Fault</strong> 错误，这个错误会产生一个信号，操作系统默认对这个信号的处理就是结束进程，整个进程都被销毁了，这样的话这个进程中存在的其他线程自然也就不存在了。</p>
-<ul>
-<li><strong>排查 Linux 进程 CPU 使用率过高问题？</strong></li>
-</ul>
-<p>在实际开发中，有时候由于我们的程序逻辑不当问题，会导致某个线程<strong>空转</strong>（如无限空循环），进而引起该进程占用 CPU 使用率过高。这不仅会造成我们的系统卡顿，也是对 CPU 资源的一种浪费。那如何定位和排查引起 CPU 使用率过高的线程呢？</p>
-<p>在 Linux 下我们可以综合使用 pstack 和 top 命令来排查此类问题。</p>
-<h2 id="2-基础命令"><a href="#2-基础命令" class="headerlink" title="2.基础命令"></a>2.基础命令</h2><ul>
-<li>pstack</li>
-</ul>
-<p>Linux 系统中可以通过 <strong>pstack</strong> 来命令查看一个进程的线程数量和每个线程的调用堆栈情况。</p>
-<pre><code>pstack pid</code></pre><p><strong>pid</strong> 设置为要查看的进程的 id 即可。</p>
-<ul>
-<li>top</li>
-</ul>
-<p>可以查看cpu高的进程，找到占用cpu最大的进程号，然后使用：</p>
-<pre><code>top -p pid</code></pre><p>观察指定pid的CPU和内存以及负载情况。</p>
-<p>现在有如下信息：</p>
-<pre><code>top - 19:30:05 up  6:15,  1 user,  load average: 0.85, 0.71, 0.61
-Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  8.1 us,  2.9 sy,  0.0 ni, 87.8 id,  0.0 wa,  0.0 hi,  1.1 si,  0.0 st
-KiB Mem : 20412976 total, 10960136 free,  5416592 used,  4036248 buff/cache
-KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </code></pre><p><strong>第一行是任务队列信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">任务队列信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">9:30:05</td>
-<td align="center">当前时间</td>
-</tr>
-<tr>
-<td align="center">6:15 min</td>
-<td align="center">用户在线时间</td>
-</tr>
-<tr>
-<td align="center">1users</td>
-<td align="center">在线用户数</td>
-</tr>
-<tr>
-<td align="center">load average: 0.85, 0.71, 0.61</td>
-<td align="center">系统负载，即任务队列的平均长度。1分钟前、5分钟前、15分钟前平均负载</td>
-</tr>
-</tbody></table>
-<p><strong>第二行为进程的信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">进程信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Tasks: 1 total</td>
-<td align="center">进程总数</td>
-</tr>
-<tr>
-<td align="center">0 running</td>
-<td align="center">正在运行的进程数</td>
-</tr>
-<tr>
-<td align="center">1 sleeping</td>
-<td align="center">睡眠的进程数</td>
-</tr>
-<tr>
-<td align="center">0 stopped</td>
-<td align="center">停止的进程数</td>
-</tr>
-<tr>
-<td align="center">0 zombie</td>
-<td align="center">僵尸进程数</td>
-</tr>
-</tbody></table>
-<p><strong>第三行为cpu信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">cpu信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">8.1 us</td>
-<td align="center">用户空间占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">2.9% sy</td>
-<td align="center">内核空间占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% ni</td>
-<td align="center">用户进程空间内改变过优先级的进程占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">87.8% id</td>
-<td align="center">空闲CPU百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% wa</td>
-<td align="center">等待输入输出的CPU时间百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% hi</td>
-<td align="center">硬件中断</td>
-</tr>
-<tr>
-<td align="center">1.1% si</td>
-<td align="center">软件中断</td>
-</tr>
-<tr>
-<td align="center">0.0%st</td>
-<td align="center">实时</td>
-</tr>
-</tbody></table>
-<p><strong>第四、五行为内存信息。</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">物理内存信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Mem: 20412976 total</td>
-<td align="center">物理内存总量</td>
-</tr>
-<tr>
-<td align="center">5416592 used</td>
-<td align="center">使用的物理内存总量</td>
-</tr>
-<tr>
-<td align="center">10960136 free</td>
-<td align="center">空闲内存总量</td>
-</tr>
-<tr>
-<td align="center">4036248 buffers/cache</td>
-<td align="center">用作内核缓存的内存量</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th align="center">交换区信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Swap: 2097148 total</td>
-<td align="center">交换区总量</td>
-</tr>
-<tr>
-<td align="center">0k used</td>
-<td align="center">使用的交换区总量</td>
-</tr>
-<tr>
-<td align="center">2097148 free</td>
-<td align="center">空闲交换区总量</td>
-</tr>
-<tr>
-<td align="center">14315608 cached</td>
-<td align="center">缓冲的交换区总量</td>
-</tr>
-</tbody></table>
-<p>那如何通过top命令定位问题进程中每个线程占用cpu情况？</p>
-<p>使用<code>-H</code>,top 命令的 -H 选项的作用是显示每个一个进程的各个线程运行状态（线程模式）。</p>
+                <h1 id="C-STL-源码剖析之-Traits-编程技法"><a href="#C-STL-源码剖析之-Traits-编程技法" class="headerlink" title="C++ STL 源码剖析之 Traits 编程技法"></a>C++ STL 源码剖析之 Traits 编程技法</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0.导语"></a>0.导语</h2><p>在 STL 编程中，容器和算法是独立设计的，即数据结构和算法是独立设计的，连接容器和算法的桥梁就是迭代器了，迭代器使其独立设计成为可能。如下图所示：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/rela.png" alt=""></p>
+<p>上图给出了 STL 的目标就是要把数据和算法分开，分别对其进行设计，之后通过一种名为 iterator 的东西，把这二者再粘接到一起。</p>
+<p>设计模式中，关于 iterator 的描述为：<strong>一种能够顺序访问容器中每个元素的方法，使用该方法不能暴露容器内部的表达方式。而类型萃取技术就是为了要解决和 iterator 有关的问题的。</strong></p>
+<p>它将范型算法(find, count, find_if)用于某个容器中,最重要的是要给算法提供一个访问容器元素的工具，iterator 就扮演着这个重要的角色。</p>
+<p>而在算法中我们可能会定义简单的中间变量或者设定算法的返回变量类型，这时候需要知道迭代器所指元素的类型是什么，但是由于没有 typeof 这类判断类型的函数,我们无法直接获取，那该如何是好？本文就来具体阐述。</p>
+<p>对于迭代器来说就是一种智能指针，因此，它也就拥有了一般指针的所有特点——能够对其进行*和-&gt;操作。但是在遍历容器的时候，不可避免的要对遍历的容器内部有所了解，所以，干脆把迭代器的开发工作交给容器的设计者好了，如此以来，所有实现细节反而得以封装起来不被使用者看到，这正是为什么每一种 STL 容器都提供有专属迭代器的缘故。</p>
+<p>而 Traits 在<code>bits/stl_iterator_base_types.h</code>中：</p>
+<pre class=" language-c++"><code class="language-c++">template<class _Tp>
+struct iterator_traits<_Tp*>
+{
+    typedef ptrdiff_t difference_type;
+    typedef typename _Tp::value_type value_type;
+    typedef typename _Tp::pointer pointer;
+    typedef typename _Tp::reference reference;
+    typedef typename _Tp::iterator_category iterator_category;
+};</code></pre>
+<p>看的一脸懵逼吧，没事，看完本节，入门 STL，哈哈~</p>
+<h2 id="1-template-参数推导"><a href="#1-template-参数推导" class="headerlink" title="1.template 参数推导"></a>1.template 参数推导</h2><p>首先，在算法中运用迭代器时，很可能会用到<strong>其相应型别（associated type）</strong>（迭代器所指之物的型别）。假设算法中有必要声明一个变量，以”迭代器所指对象的型别”为型别，该<strong>怎么办呢？</strong></p>
+<p><strong>解决方法是：利用 function template 的参数推导机制。</strong></p>
 <p>例如：</p>
-<pre><code>top -p 2085 -H</code></pre><p><img src="http://pxz2lirgn.bkt.clouddn.com/top.png" alt=""></p>
-<p>由上图明显可以发现，线程PID 2085 CPU占用率最高，接下来定位该线程的代码是否出现异常导致cpu占用过高。</p>
-<p>结合上述的pstack，例如：</p>
-<pre><code>pstack 2085</code></pre><p>在 pstack 输出的各个线程中，只要逐一对照我们的程序源码来梳理下该线程中是否有大多数时间都处于空转的逻辑，然后修改和优化这些逻辑就可以解决 CPU 使用率过高的问题了，一般情况下，不工作的线程应尽量使用锁对象让其挂起，而不是空转，这样可以提高系统资源利用率。</p>
+<p>如果 T 是某个指向特定对象的指针，那么在 func 中需要指针所指向对象的型别的时候，怎么办呢？这个还比较容易，模板的参数推导机制可以完成任务，</p>
+<pre class=" language-c++"><code class="language-c++">template <class I>
+inline
+void func(I iter) {
+    func_impl(iter, *iter); // 传入iter和iter所指的值，class自动推导
+}</code></pre>
+<p>通过模板的推导机制，我们轻而易举的或得了指针所指向的对象的类型。</p>
+<pre class=" language-c++"><code class="language-c++">template <class I, class T>
+void func_impl(I iter, T t) {
+        T tmp; // 这里就是迭代器所指物的类别
+        // ... 功能实现
+}
+
+int main() {
+    int i;
+    func(&i);
+}</code></pre>
+<p>但是，<strong>函数的”template 参数推导机制”推导的只是参数，无法推导函数的返回值类型。万一需要推导函数的传回值，就无能为力了</strong>。因此，我们引出下面的方法。</p>
+<h2 id="2-声明内嵌型别"><a href="#2-声明内嵌型别" class="headerlink" title="2.声明内嵌型别"></a>2.声明内嵌型别</h2><p><strong>迭代器所指对象的型别，称之为迭代器的 value type。</strong></p>
+<p>尽管在 func_impl 中我们可以把 T 作为函数的返回值，但是问题是用户需要调用的是 func。</p>
+<pre class=" language-c++"><code class="language-c++">template <class I, class T>
+T func_impl(I iter, T t) {
+        T tmp; // 这里就是迭代器所指物的类别
+        // ... 功能实现
+}
+template <class T>
+(*T) func(T t) { // !!!Wrong code
+    return func_impl(t, *t); // forward the task to func_impl
+}
+int main() {
+    int i  =10;
+    cout<<func(&i)<<endl; // !!! Can’t pass compile
+}</code></pre>
+<p>如果去编译上述代码，编译失败！</p>
+<p>这个问题解决起来也不难，声明内嵌型别似乎是个好主意，这样我们就可以直接获取。只要做一个 iterator，然后在定义的时候为其指向的对象类型制定一个别名，就好了，像下面这样：</p>
+<pre class=" language-c++"><code class="language-c++">template <class T>
+struct MyIter {
+    typedef T value_type; // 内嵌型别声明
+    T* ptr;
+    MyIter(T* p = 0) : ptr(p) {}
+    T& operator*() const { return *ptr; }
+};
+
+template <class I>
+typename I::value_type
+func(I ite) {
+    std::cout << "class version" << std::endl;
+    return *ite;
+}
+int main() {
+    // ...
+    MyIter<int> ite(new int(8));
+    cout << func(ite);    // 输出8
+}</code></pre>
+<p>很漂亮的解决方案，看上去一切都很完美。但是，实际上还是有问题，因为 func 如果是一个泛型算法，那么它也绝对要接受一个原生指针作为迭代器，但是显然，你无法让下面的代码编译通过：</p>
+<pre class=" language-c++"><code class="language-c++">int *p = new int(5);
+cout<<func(p)<<endl; // error</code></pre>
+<p>我们的 func 无法支持原生指针，这显然是不能接受的。此时，template partial specialization 就派上了用场。</p>
+<h2 id="3-救世主-Traits"><a href="#3-救世主-Traits" class="headerlink" title="3.救世主 Traits"></a>3.救世主 Traits</h2><p>前面也提到了，如果直接使用<code>typename I::value_type</code>，算法就无法接收原生指针，因为原生指针根本就没有 value_type 这个内嵌类型。</p>
+<p>因此，我们还需要加入一个中间层对其进行判断，看它是不是原生指针，注意，这就是 traits 技法的妙处所在。</p>
+<p>如果我们只使用上面的做法，也就是内嵌 value_type，那么对于没有 value_type 的指针，我们只能对其进行偏特化，这种偏特化是针对可调用函数 func 的偏特化，假如 func 有 100 万行行代码，那么就会造成极大的视觉污染。</p>
+<p><strong>（1）函数偏特化</strong></p>
+<p>函数偏特化：</p>
+<pre class=" language-c++"><code class="language-c++">template <class T>
+struct MyIter {
+    typedef T value_type; // 内嵌型别声明
+    T* ptr;
+    MyIter(T* p = 0) : ptr(p) {}
+    T& operator*() const { return *ptr; }
+};
+
+template <class I>
+typename I::value_type
+func(I ite) {
+    std::cout << "class version" << std::endl;
+    return *ite;
+}
+template <class I>
+I
+func(I* ite) {
+    std::cout << "pointer version" << std::endl;
+    return *ite;
+}
+template <class I>
+I func(const I* ite) {
+    std::cout << "const pointer version" << std::endl;
+    return *ite;
+}
+int main() {
+    // ...
+    MyIter<int> ite(new int(8));
+    cout << func(ite)<<endl;
+    int *p = new int(52);
+    cout<<func(p)<<endl;
+    const int k = 3;
+    cout<<func(&k)<<endl;
+}</code></pre>
+<p>输出：</p>
+<pre class=" language-c++"><code class="language-c++">class version
+8
+pointer version
+52
+const pointer version
+3</code></pre>
+<p><strong>（2）加入中间层</strong></p>
+<p>在 STL 中 Traits 是什么呢？看下图：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/trai.png" alt=""></p>
+<p>利用一个中间层<code>iterator_traits</code>固定了<code>func</code>的形式，使得重复的代码大量减少，唯一要做的就是稍稍特化一下 iterator_tartis 使其支持 pointer 和 const pointer:)</p>
+<pre class=" language-c++"><code class="language-c++">#include <iostream>
+
+template <class T>
+struct MyIter {
+    typedef T value_type; // 内嵌型别声明
+    T* ptr;
+    MyIter(T* p = 0) : ptr(p) {}
+    T& operator*() const { return *ptr; }
+};
+// class type
+template <class T>
+struct iterator_traits {
+    typedef typename T::value_type value_type;
+};
+// 偏特化1
+template <class T>
+struct iterator_traits<T*> {
+    typedef T value_type;
+};
+// 偏特化2
+template <class T>
+struct iterator_traits<const T*> {
+    typedef T value_type;
+};
+
+template <class I>
+typename iterator_traits<I>::value_type
+// 首先询问iterator_traits<I>::value_type,如果传递的I为指针,则进入特化版本,iterator_traits直接回答;如果传递进来的I为class type,就去询问T::value_type.
+func(I ite) {
+    std::cout << "normal version" << std::endl;
+    return *ite;
+}
+int main() {
+    // ...
+    MyIter<int> ite(new int(8));
+    std::cout << func(ite)<<std::endl;
+    int *p = new int(52);
+    std::cout<<func(p)<<std::endl;
+    const int k = 3;
+    std::cout<<func(&k)<<std::endl;
+}
+</code></pre>
+<p>上述的过程是首先询问<code>iterator_traits&lt;I&gt;::value_type</code>，如果传递的 I 为指针,则进入特化版本,<code>iterator_traits</code>直接回答<code>T</code>;如果传递进来的<code>I</code>为<code>class type</code>,就去询问<code>T::value_type</code>.</p>
+<p>上述的通俗解释为算法(func)问 iterator_traits(我)，但是 iterator_traits(我)发现手上是指针的时候，就由我来替它回答。如果是 class type，iterator_traits(我)就继续问(他—T::value_type)。</p>
+<p><strong>总结：通过定义内嵌类型，我们获得了知晓 iterator 所指元素类型的方法，通过 traits 技法，我们将函数模板对于原生指针和自定义 iterator 的定义都统一起来，我们使用 traits 技法主要是为了解决原生指针和自定义 iterator 之间的不同所造成的代码冗余，这就是 traits 技法的妙处所在。</strong></p>
+<p>学习书籍：</p>
+<blockquote>
+<p>侯捷《 STL 源码剖析》</p>
+</blockquote>
+<p>学习文章：</p>
+<blockquote>
+<p><a href="https://juejin.im/post/5b1a43fb51882513bf1795c6" target="_blank" rel="noopener">https://juejin.im/post/5b1a43fb51882513bf1795c6</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.cnblogs.com/mangoyuan/p/6446046.html" target="_blank" rel="noopener">https://www.cnblogs.com/mangoyuan/p/6446046.html</a></p>
+</blockquote>
+<blockquote>
+<p><a href="http://www.cppblog.com/nacci/archive/2005/11/03/911.aspx" target="_blank" rel="noopener">http://www.cppblog.com/nacci/archive/2005/11/03/911.aspx</a></p>
+</blockquote>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -826,8 +834,8 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
                 </a>
             </div>
             <br/>
-            <a  href="/2019/09/24/duo-jin-cheng-yu-duo-xian-cheng-ji-chu/">
-                    《C/C++多线程编程基础》
+            <a  href="/2019/10/07/traits/">
+                    《C++ STL 源码剖析之 Traits 编程技法》
             </a> 由
             <a href="http://light-city.club">
                 light-city
@@ -1126,9 +1134,68 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fas fa-chevron-left"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2019/10/07/traits/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="C++ STL 源码剖析之 Traits 编程技法">
+                        
+                        <span class="card-title">C++ STL 源码剖析之 Traits 编程技法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            C++ STL 源码剖析之 Traits 编程技法
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/STL/" class="post-category">
+                                    STL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2019/10/06/list/">
                     <div class="card-image">
@@ -1146,9 +1213,9 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1174,63 +1241,6 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
                     
                     <a href="/tags/源码/">
                         <span class="chip bg-color">源码</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/09/17/googletest-1/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="C++ 项目之Googletest单元测试">
-                        
-                        <span class="card-title">C++ 项目之Googletest单元测试</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            CLION使用Googletest及其断言第一谈
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-09-17
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/单元测试/" class="post-category">
-                                    单元测试
-                                </a>
-                            
-                            <a href="/categories/单元测试/C/" class="post-category">
-                                    C++
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C++</span>
-                    </a>
-                    
-                    <a href="/tags/Googletest/">
-                        <span class="chip bg-color">Googletest</span>
                     </a>
                     
                 </div>
