@@ -4,11 +4,9 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="C/C++多线程编程基础, fight">
-    <meta name="description" content="C/C++多线程编程基础1.基础问题
-某个线程崩溃，会导致进程退出吗?或者说进程中某个线程崩溃，是否会对其他线程造成影响？
-
-答：一般来说，每个线程都是独立执行的单位，每个线程都有自己的上下文堆栈，一个线程的的崩溃不会对其他线程造成影响。但">
+    <meta name="keywords" content="C++ STL源码剖析之实现一个简单的iterator_category, fight">
+    <meta name="description" content="C++ STL源码剖析之实现一个简单的iterator_category0.导语本节使用上节Traits特性，研究iterator源码，来实现一个简单的iterator_category，同时对iterator的源码结构进行分析。
+知其然，">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +14,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>C/C++多线程编程基础 | 光城小屋</title>
+    <title>C++ STL源码剖析之实现一个简单的iterator_category | 光城小屋</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -287,13 +285,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        C/C++多线程编程基础
+                        C++ STL源码剖析之实现一个简单的iterator_category
                     </div>
                 </div>
             </div>
@@ -409,8 +407,8 @@
                                 <span class="chip bg-color">C++</span>
                             </a>
                         
-                            <a href="/tags/C/">
-                                <span class="chip bg-color">C</span>
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
                             </a>
                         
                     </div>
@@ -425,12 +423,8 @@
                                 C++
                             </a>
                         
-                            <a href="/categories/C/C/" class="post-category">
-                                C
-                            </a>
-                        
-                            <a href="/categories/C/C/多线程/" class="post-category">
-                                多线程
+                            <a href="/categories/C/STL/" class="post-category">
+                                STL
                             </a>
                         
                     </div>
@@ -441,21 +435,21 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-09-24
+                    2019-10-08
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1.1k
+                        713
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        4 分
+                        2 分
                     </div>
                     
                 
@@ -471,181 +465,257 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="C-C-多线程编程基础"><a href="#C-C-多线程编程基础" class="headerlink" title="C/C++多线程编程基础"></a>C/C++多线程编程基础</h1><h2 id="1-基础问题"><a href="#1-基础问题" class="headerlink" title="1.基础问题"></a>1.基础问题</h2><ul>
-<li><strong>某个线程崩溃，会导致进程退出吗?或者说进程中某个线程崩溃，是否会对其他线程造成影响？</strong></li>
-</ul>
-<p>答：一般来说，每个线程都是独立执行的单位，每个线程都有自己的上下文堆栈，一个线程的的崩溃不会对其他线程造成影响。但是通常情况下，一个线程崩溃会产生一个进程内的错误，例如，在 Linux 操作系统中，可能会产生一个 <strong>Segment Fault</strong> 错误，这个错误会产生一个信号，操作系统默认对这个信号的处理就是结束进程，整个进程都被销毁了，这样的话这个进程中存在的其他线程自然也就不存在了。</p>
+                <h1 id="C-STL源码剖析之实现一个简单的iterator-category"><a href="#C-STL源码剖析之实现一个简单的iterator-category" class="headerlink" title="C++ STL源码剖析之实现一个简单的iterator_category"></a>C++ STL源码剖析之实现一个简单的iterator_category</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0.导语"></a>0.导语</h2><p>本节使用上节Traits特性，研究iterator源码，来实现一个简单的iterator_category，同时对iterator的源码结构进行分析。</p>
+<p><strong>知其然，知其所以然，源码面前了无秘密！</strong></p>
+<h2 id="1-利用萃取机实现一个简单的iterator-category识别"><a href="#1-利用萃取机实现一个简单的iterator-category识别" class="headerlink" title="1.利用萃取机实现一个简单的iterator_category识别"></a>1.利用萃取机实现一个简单的iterator_category识别</h2><p>上一节指出了迭代器的作用，依旧如下图所示：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/rela.png" alt=""></p>
+<p>迭代器是指向序列元素的指针的一种抽象。通过使用迭代器，我们可以访问序列中的某个元素、改变序列中的某个元素的值、使迭代器向前或向后行走等等。</p>
+<p>迭代器有常见有五种类型: value_type, difference_type, reference_type, pointer_type都比较容易在 traits 和相应偏特化中提取。</p>
+<p>但是，iterator_category一般也有5个，这个相应型别会引发较大规模的写代码工程。</p>
 <ul>
-<li><strong>排查 Linux 进程 CPU 使用率过高问题？</strong></li>
+<li>单向移动只读迭代器 Input Iterator</li>
+<li>单向移动只写迭代器 Output Iterator</li>
+<li>单向移动读写迭代器 Forward Iterator</li>
+<li>双向移动读写迭代器 Bidirectional Iterator</li>
 </ul>
-<p>在实际开发中，有时候由于我们的程序逻辑不当问题，会导致某个线程<strong>空转</strong>（如无限空循环），进而引起该进程占用 CPU 使用率过高。这不仅会造成我们的系统卡顿，也是对 CPU 资源的一种浪费。那如何定位和排查引起 CPU 使用率过高的线程呢？</p>
-<p>在 Linux 下我们可以综合使用 pstack 和 top 命令来排查此类问题。</p>
-<h2 id="2-基础命令"><a href="#2-基础命令" class="headerlink" title="2.基础命令"></a>2.基础命令</h2><ul>
-<li>pstack</li>
-</ul>
-<p>Linux 系统中可以通过 <strong>pstack</strong> 来命令查看一个进程的线程数量和每个线程的调用堆栈情况。</p>
-<pre><code>pstack pid</code></pre><p><strong>pid</strong> 设置为要查看的进程的 id 即可。</p>
-<ul>
-<li>top</li>
-</ul>
-<p>可以查看cpu高的进程，找到占用cpu最大的进程号，然后使用：</p>
-<pre><code>top -p pid</code></pre><p>观察指定pid的CPU和内存以及负载情况。</p>
-<p>现在有如下信息：</p>
-<pre><code>top - 19:30:05 up  6:15,  1 user,  load average: 0.85, 0.71, 0.61
-Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  8.1 us,  2.9 sy,  0.0 ni, 87.8 id,  0.0 wa,  0.0 hi,  1.1 si,  0.0 st
-KiB Mem : 20412976 total, 10960136 free,  5416592 used,  4036248 buff/cache
-KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </code></pre><p><strong>第一行是任务队列信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">任务队列信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">9:30:05</td>
-<td align="center">当前时间</td>
-</tr>
-<tr>
-<td align="center">6:15 min</td>
-<td align="center">用户在线时间</td>
-</tr>
-<tr>
-<td align="center">1users</td>
-<td align="center">在线用户数</td>
-</tr>
-<tr>
-<td align="center">load average: 0.85, 0.71, 0.61</td>
-<td align="center">系统负载，即任务队列的平均长度。1分钟前、5分钟前、15分钟前平均负载</td>
-</tr>
-</tbody></table>
-<p><strong>第二行为进程的信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">进程信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Tasks: 1 total</td>
-<td align="center">进程总数</td>
-</tr>
-<tr>
-<td align="center">0 running</td>
-<td align="center">正在运行的进程数</td>
-</tr>
-<tr>
-<td align="center">1 sleeping</td>
-<td align="center">睡眠的进程数</td>
-</tr>
-<tr>
-<td align="center">0 stopped</td>
-<td align="center">停止的进程数</td>
-</tr>
-<tr>
-<td align="center">0 zombie</td>
-<td align="center">僵尸进程数</td>
-</tr>
-</tbody></table>
-<p><strong>第三行为cpu信息</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">cpu信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">8.1 us</td>
-<td align="center">用户空间占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">2.9% sy</td>
-<td align="center">内核空间占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% ni</td>
-<td align="center">用户进程空间内改变过优先级的进程占用CPU百分比</td>
-</tr>
-<tr>
-<td align="center">87.8% id</td>
-<td align="center">空闲CPU百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% wa</td>
-<td align="center">等待输入输出的CPU时间百分比</td>
-</tr>
-<tr>
-<td align="center">0.0% hi</td>
-<td align="center">硬件中断</td>
-</tr>
-<tr>
-<td align="center">1.1% si</td>
-<td align="center">软件中断</td>
-</tr>
-<tr>
-<td align="center">0.0%st</td>
-<td align="center">实时</td>
-</tr>
-</tbody></table>
-<p><strong>第四、五行为内存信息。</strong></p>
-<table>
-<thead>
-<tr>
-<th align="center">物理内存信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Mem: 20412976 total</td>
-<td align="center">物理内存总量</td>
-</tr>
-<tr>
-<td align="center">5416592 used</td>
-<td align="center">使用的物理内存总量</td>
-</tr>
-<tr>
-<td align="center">10960136 free</td>
-<td align="center">空闲内存总量</td>
-</tr>
-<tr>
-<td align="center">4036248 buffers/cache</td>
-<td align="center">用作内核缓存的内存量</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th align="center">交换区信息</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Swap: 2097148 total</td>
-<td align="center">交换区总量</td>
-</tr>
-<tr>
-<td align="center">0k used</td>
-<td align="center">使用的交换区总量</td>
-</tr>
-<tr>
-<td align="center">2097148 free</td>
-<td align="center">空闲交换区总量</td>
-</tr>
-<tr>
-<td align="center">14315608 cached</td>
-<td align="center">缓冲的交换区总量</td>
-</tr>
-</tbody></table>
-<p>那如何通过top命令定位问题进程中每个线程占用cpu情况？</p>
-<p>使用<code>-H</code>,top 命令的 -H 选项的作用是显示每个一个进程的各个线程运行状态（线程模式）。</p>
-<p>例如：</p>
-<pre><code>top -p 2085 -H</code></pre><p><img src="http://pxz2lirgn.bkt.clouddn.com/top.png" alt=""></p>
-<p>由上图明显可以发现，线程PID 2085 CPU占用率最高，接下来定位该线程的代码是否出现异常导致cpu占用过高。</p>
-<p>结合上述的pstack，例如：</p>
-<pre><code>pstack 2085</code></pre><p>在 pstack 输出的各个线程中，只要逐一对照我们的程序源码来梳理下该线程中是否有大多数时间都处于空转的逻辑，然后修改和优化这些逻辑就可以解决 CPU 使用率过高的问题了，一般情况下，不工作的线程应尽量使用锁对象让其挂起，而不是空转，这样可以提高系统资源利用率。</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/iterator.png" alt=""></p>
+<p>例如：我们实现了 advanceII, advanceBI, advanceRAI 分别代表迭代器类型是Input Iterator，Bidirectional Iterator和Random Access Iterator的对应实现。</p>
+<pre class=" language-c++"><code class="language-c++">template<class Iterator>
+void advance(Iterator& i) {
+    if (is_random_access_iterator(i))
+        advanceRAI(i,n);
+    if (is_bidirectional_iterator(i))
+        advanceBI(i,n);
+    else
+        advanceII(i,n);
+}</code></pre>
+<p>但这样在执行时期才决定使用哪一个版本，会<strong>影响程序效率</strong>。最好能够在编译期就选择正确的版本。</p>
+<p>而<strong>重载</strong>这个函数机制可以达成这个目标。</p>
+<p>而对于<code>advanceXX()</code>都有两个函数参数，型别都未定(因为都是模板参数)。为了令其同名，形成重载函数，我们必须加上一个型别已确定的函数参数，使函数重载机制得以有效运作起来。</p>
+<p>设计如下：如果<strong>traits</strong>有能力萃取出迭代器的种类，我们便可利用这个”迭代器类型”相应型别作为advancexx的第三个参数，而这个相应型别必须是一个class type，不能只是数值号码类的东西，因为编译器需依赖它来进行<strong>重载决议</strong>。</p>
+<p>下面来进行实现，首先给出一个总体结构图：</p>
+<p><img src="http://pxz2lirgn.bkt.clouddn.com/itera.png" alt=""></p>
+<p>定义出下面tag：</p>
+<pre class=" language-c++"><code class="language-c++">struct input_iterator_tag {};
+struct output_iterator_tag {};
+struct forward_iterator_tag : public input_iterator_tag {};
+struct bidirectional_iterator_tag : public forward_iterator_tag {};
+struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+// 继承的好处就是，当函数需要用 input_iterator_tag 的时候
+// 假设你传进一个forward_iterator_tag，它会沿继承向上找，知道符合条件</code></pre>
+<p>声明了一些列 tag 之后，我们就可以重载 advance函数，我们把这些函数用下滑线来定义，表示在内部使用，外部不可见。</p>
+<pre class=" language-c++"><code class="language-c++">// 继承的好处就是，当函数需要用 input_iterator_tag 的时候
+// 假设你传进一个forward_iterator_tag，它会沿继承向上找，知道符合条件
+// input iterator
+template<class inputIterator, class distance>
+inline void __advance(inputIterator&i, distance n,
+                      input_iterator_tag) {
+    std::cout << "input tag" << std::endl;
+}
+// output iterator
+template<class outputIterator, class distance>
+inline void __advance(outputIterator&i, distance n,
+                      output_iterator_tag) {
+    std::cout << "output tag" << std::endl;
+}
+
+// forward iterator
+template<class ForwardIterator, class Distance>
+inline void __advance(ForwardIterator &i, Distance n,
+                      forward_iterator_tag) {
+    std::cout << "forward tag" << std::endl;
+}
+
+// bidrectional iterator
+template<class BidiectionalIterator, class Distance>
+inline void __advance(BidiectionalIterator &i, Distance n,
+                      bidiectional_iterator_tag) {
+    std::cout << "bidrectional tag" << std::endl;
+
+}
+
+// RandomAccess iterator
+template<class RandomAccessIterator, class Distance>
+inline void __advance(RandomAccessIterator &i, Distance n,
+                      random_access_iterator_tag) {
+    std::cout << "randomaccess tag" << std::endl;
+
+}</code></pre>
+<p>定义萃取机：</p>
+<pre class=" language-c++"><code class="language-c++">// traits 型别
+template<class I>
+struct Iterator_traits {
+    typedef typename I::iterator_category iterator_category;
+};
+
+// 针对原生指针设计的"偏特化版"
+template<class I>
+struct Iterator_traits<I *> {
+    typedef random_access_iterator_tag iterator_category;
+};
+template<class I>
+struct Iterator_traits<const I *> {
+    typedef random_access_iterator_tag iterator_category;
+};</code></pre>
+<p>对外暴露接口：</p>
+<pre class=" language-c++"><code class="language-c++">// 对外接口
+template<class InputIterator, class Distance>
+inline void advance(InputIterator &i, Distance n) {
+    // 通过Ierator_traits询问它的iterator_category是谁
+    typedef typename Iterator_traits<InputIterator>::iterator_category category;
+    __advance(i, n, category()); // 各型别的重载
+}
+</code></pre>
+<p>定义class type：</p>
+<pre class=" language-c++"><code class="language-c++">// class type
+template<class Category>
+struct iterator {
+    typedef Category iterator_category;
+};</code></pre>
+<p>开始测试，我们使用上述定义的class type与原生指针来测试，分别进入萃取机的普通萃取机与偏特化萃取机，看看是否得到相应的Tag。</p>
+<pre class=" language-c++"><code class="language-c++">int main() {
+    iterator<input_iterator_tag> input;
+    iterator<output_iterator_tag> output;
+    iterator<forward_iterator_tag> forward;
+    iterator<bidiectional_iterator_tag> bidect;
+    iterator<random_access_iterator_tag> random;
+    advance(input, 10);
+    advance(output, 10);
+    advance(forward, 10);
+    advance(bidect, 10);
+    advance(random, 10);
+    int *p=NULL;
+    advance(p,10);
+    return 0;
+}</code></pre>
+<p>输出结果：</p>
+<pre class=" language-c++"><code class="language-c++">input tag
+output tag
+forward tag
+bidrectional tag
+randomaccess tag
+randomaccess tag</code></pre>
+<p>一切如我们预期一样，通过萃取机，我们获得了每个迭代器的tag，以及原生指针的tag。</p>
+<p>我们再想得复杂一些，如果我们想知道advance的返回类型，那如何做呢？</p>
+<p>首先修改<code>advance</code>返回：</p>
+<pre class=" language-c++"><code class="language-c++">// 对外接口
+template<class InputIterator, class Distance>
+inline typename Iterator_traits<InputIterator>::iterator_category
+advance(InputIterator &i, Distance n) {
+    // 通过Ierator_traits询问它的iterator_category是谁
+    typedef typename Iterator_traits<InputIterator>::iterator_category category;
+    return __advance(i, n, category()); // 各型别的重载
+}</code></pre>
+<p>紧接着修改<code>__advance</code>返回：</p>
+<pre class=" language-c++"><code class="language-c++">// input iterator
+template<class inputIterator, class distance>
+inline typename Iterator_traits<inputIterator>::iterator_category
+__advance(inputIterator &i, distance n,
+          input_iterator_tag) {
+    std::cout << "input tag" << std::endl;
+    return input_iterator_tag();
+}
+
+// output iterator
+template<class outputIterator, class distance>
+inline typename Iterator_traits<outputIterator>::iterator_category
+__advance(outputIterator &i, distance n,
+          output_iterator_tag) {
+    std::cout << "output tag" << std::endl;
+    return output_iterator_tag();
+}
+
+// forward iterator
+template<class ForwardIterator, class Distance>
+inline typename Iterator_traits<ForwardIterator>::iterator_category
+__advance(ForwardIterator &i, Distance n,
+          forward_iterator_tag) {
+    std::cout << "forward tag" << std::endl;
+    return forward_iterator_tag();
+}
+
+// bidrectional iterator
+template<class BidiectionalIterator, class Distance>
+inline typename Iterator_traits<BidiectionalIterator>::iterator_category
+__advance(BidiectionalIterator &i, Distance n,
+          bidiectional_iterator_tag) {
+    std::cout << "bidrectional tag" << std::endl;
+    return bidiectional_iterator_tag();
+}
+
+// RandomAccess iterator
+template<class RandomAccessIterator, class Distance>
+inline typename Iterator_traits<RandomAccessIterator>::iterator_category
+__advance(RandomAccessIterator &i, Distance n,
+          random_access_iterator_tag) {
+    std::cout << "randomaccess tag" << std::endl;
+    return random_access_iterator_tag();
+}</code></pre>
+<p>只需要把<code>void</code>修改为相应的萃取机即可。</p>
+<p>最后测试修改，添加上返回：</p>
+<pre class=" language-c++"><code class="language-c++">int main() {
+    iterator<input_iterator_tag> input;
+    iterator<output_iterator_tag> output;
+    iterator<forward_iterator_tag> forward;
+    iterator<bidiectional_iterator_tag> bidect;
+    iterator<random_access_iterator_tag> random;
+    input_iterator_tag inputIteratorTag = advance(input, 10);
+    output_iterator_tag outputIteratorTag = advance(output, 10);
+    forward_iterator_tag forwardIteratorTag = advance(forward, 10);
+    bidiectional_iterator_tag bidiectionalIteratorTag = advance(bidect, 10);
+    random_access_iterator_tag randomAccessIteratorTag = advance(random, 10);
+    int *p = NULL;
+    random_access_iterator_tag v = advance(p, 10);
+    return 0;
+}</code></pre>
+<p>至此，一个简单的迭代器类型在编译器判别实现完毕。</p>
+<h2 id="2-STL源码剖析Iterator"><a href="#2-STL源码剖析Iterator" class="headerlink" title="2.STL源码剖析Iterator"></a>2.STL源码剖析Iterator</h2><p>在<code>bits/stl_iterator_base_types.h</code>中也是如上述所示(实际上，上面就是STL源码的简单版，很接近)，来我们一起来看。</p>
+<p>（1）<code>tag</code></p>
+<pre class=" language-c++"><code class="language-c++"> ///  Marking input iterators.
+  struct input_iterator_tag { };
+
+  ///  Marking output iterators.
+  struct output_iterator_tag { };
+
+  /// Forward iterators support a superset of input iterator operations.
+  struct forward_iterator_tag : public input_iterator_tag { };
+
+  /// Bidirectional iterators support a superset of forward iterator
+  /// operations.
+  struct bidirectional_iterator_tag : public forward_iterator_tag { };
+
+  /// Random-access iterators support a superset of bidirectional
+  /// iterator operations.
+  struct random_access_iterator_tag : public bidirectional_iterator_tag { };</code></pre>
+<p>与我上面用的一样。</p>
+<p>（2）<code>iterator_traits</code>萃取机，里面包含五种，而上面只是实现其中的一种：<code>iterator_category</code>。所以在STL中容器与算法之间的桥梁iterator必须包含下面五种 typedef。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Iterator>
+struct iterator_traits
+{
+  typedef typename _Iterator::iterator_category iterator_category;
+  typedef typename _Iterator::value_type        value_type;
+  typedef typename _Iterator::difference_type   difference_type;
+  typedef typename _Iterator::pointer           pointer;
+  typedef typename _Iterator::reference         reference;
+};</code></pre>
+<p>（3）<code>iterator</code></p>
+<p>上面提到的class type为下面的简单版，对比一下，没有啥区别，就是模板参数多了一些，typedef多了。</p>
+<pre class=" language-c++"><code class="language-c++">template<typename _Category, typename _Tp, typename _Distance = ptrdiff_t,
+       typename _Pointer = _Tp*, typename _Reference = _Tp&>
+struct iterator
+{
+  /// One of the @link iterator_tags tag types@endlink.
+  typedef _Category  iterator_category;
+  /// The type "pointed to" by the iterator.
+  typedef _Tp        value_type;
+  /// Distance between iterators is represented as this type.
+  typedef _Distance  difference_type;
+  /// This type represents a pointer-to-value_type.
+  typedef _Pointer   pointer;
+  /// This type represents a reference-to-value_type.
+  typedef _Reference reference;
+};</code></pre>
+<p>至此，iterator与traits特性分析完毕。欢迎与我共同探讨STL源码奥秘，如侯捷老师所说：<strong>源码面前了无秘密。</strong></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -826,8 +896,8 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
                 </a>
             </div>
             <br/>
-            <a  href="/2019/09/24/duo-jin-cheng-yu-duo-xian-cheng-ji-chu/">
-                    《C/C++多线程编程基础》
+            <a  href="/2019/10/08/iterator/">
+                    《C++ STL源码剖析之实现一个简单的iterator_category》
             </a> 由
             <a href="http://light-city.club">
                 light-city
@@ -1126,29 +1196,88 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fas fa-chevron-left"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2019/10/06/list/">
+                <a href="/2019/10/08/iterator/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="C++ STL源码剖析之双向环形链表list">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="C++ STL源码剖析之实现一个简单的iterator_category">
                         
-                        <span class="card-title">C++ STL源码剖析之双向环形链表list</span>
+                        <span class="card-title">C++ STL源码剖析之实现一个简单的iterator_category</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            C++ STL源码剖析之双向环形链表list
+                            C++ STL源码剖析之实现一个简单的iterator_category
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-06
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/STL/" class="post-category">
+                                    STL
+                                </a>
+                            
+                            
                         </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/10/07/traits/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="C++ STL 源码剖析之 Traits 编程技法">
+                        
+                        <span class="card-title">C++ STL 源码剖析之 Traits 编程技法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            C++ STL 源码剖析之 Traits 编程技法
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-07
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1174,63 +1303,6 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
                     
                     <a href="/tags/源码/">
                         <span class="chip bg-color">源码</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/09/17/googletest-1/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="C++ 项目之Googletest单元测试">
-                        
-                        <span class="card-title">C++ 项目之Googletest单元测试</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            CLION使用Googletest及其断言第一谈
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-09-17
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/单元测试/" class="post-category">
-                                    单元测试
-                                </a>
-                            
-                            <a href="/categories/单元测试/C/" class="post-category">
-                                    C++
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C++</span>
-                    </a>
-                    
-                    <a href="/tags/Googletest/">
-                        <span class="chip bg-color">Googletest</span>
                     </a>
                     
                 </div>
