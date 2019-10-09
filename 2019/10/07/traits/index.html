@@ -443,14 +443,14 @@
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1.1k
+                        2.1k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        4 分
+                        9 分
                     </div>
                     
                 
@@ -521,69 +521,66 @@ int main() {
     cout&lt;&lt;func(&amp;i)&lt;&lt;endl; // !!! Can’t pass compile
 }</code></pre><p>如果去编译上述代码，编译失败！</p>
 <p>这个问题解决起来也不难，声明内嵌型别似乎是个好主意，这样我们就可以直接获取。只要做一个 iterator，然后在定义的时候为其指向的对象类型制定一个别名，就好了，像下面这样：</p>
-<pre class=" language-c++"><code class="language-c++">template <class T>
+<pre><code>template &lt;class T&gt;
 struct MyIter {
     typedef T value_type; // 内嵌型别声明
     T* ptr;
     MyIter(T* p = 0) : ptr(p) {}
-    T& operator*() const { return *ptr; }
+    T&amp; operator*() const { return *ptr; }
 };
 
-template <class I>
+template &lt;class I&gt;
 typename I::value_type
 func(I ite) {
-    std::cout << "class version" << std::endl;
+    std::cout &lt;&lt; "class version" &lt;&lt; std::endl;
     return *ite;
 }
 int main() {
     // ...
-    MyIter<int> ite(new int(8));
-    cout << func(ite);    // 输出8
-}</code></pre>
-<p>很漂亮的解决方案，看上去一切都很完美。但是，实际上还是有问题，因为 func 如果是一个泛型算法，那么它也绝对要接受一个原生指针作为迭代器，但是显然，你无法让下面的代码编译通过：</p>
-<pre class=" language-c++"><code class="language-c++">int *p = new int(5);
-cout<<func(p)<<endl; // error</code></pre>
-<p>我们的 func 无法支持原生指针，这显然是不能接受的。此时，template partial specialization 就派上了用场。</p>
+    MyIter&lt;int&gt; ite(new int(8));
+    cout &lt;&lt; func(ite);    // 输出8
+}</code></pre><p>很漂亮的解决方案，看上去一切都很完美。但是，实际上还是有问题，因为 func 如果是一个泛型算法，那么它也绝对要接受一个原生指针作为迭代器，但是显然，你无法让下面的代码编译通过：</p>
+<pre><code>int *p = new int(5);
+cout&lt;&lt;func(p)&lt;&lt;endl; // error</code></pre><p>我们的 func 无法支持原生指针，这显然是不能接受的。此时，template partial specialization 就派上了用场。</p>
 <h2 id="3-救世主-Traits"><a href="#3-救世主-Traits" class="headerlink" title="3.救世主 Traits"></a>3.救世主 Traits</h2><p>前面也提到了，如果直接使用<code>typename I::value_type</code>，算法就无法接收原生指针，因为原生指针根本就没有 value_type 这个内嵌类型。</p>
 <p>因此，我们还需要加入一个中间层对其进行判断，看它是不是原生指针，注意，这就是 traits 技法的妙处所在。</p>
 <p>如果我们只使用上面的做法，也就是内嵌 value_type，那么对于没有 value_type 的指针，我们只能对其进行偏特化，这种偏特化是针对可调用函数 func 的偏特化，假如 func 有 100 万行行代码，那么就会造成极大的视觉污染。</p>
 <p><strong>（1）函数偏特化</strong></p>
 <p>函数偏特化：</p>
-<pre class=" language-c++"><code class="language-c++">template <class T>
+<pre><code>template &lt;class T&gt;
 struct MyIter {
     typedef T value_type; // 内嵌型别声明
     T* ptr;
     MyIter(T* p = 0) : ptr(p) {}
-    T& operator*() const { return *ptr; }
+    T&amp; operator*() const { return *ptr; }
 };
 
-template <class I>
+template &lt;class I&gt;
 typename I::value_type
 func(I ite) {
-    std::cout << "class version" << std::endl;
+    std::cout &lt;&lt; "class version" &lt;&lt; std::endl;
     return *ite;
 }
-template <class I>
+template &lt;class I&gt;
 I
 func(I* ite) {
-    std::cout << "pointer version" << std::endl;
+    std::cout &lt;&lt; "pointer version" &lt;&lt; std::endl;
     return *ite;
 }
-template <class I>
+template &lt;class I&gt;
 I func(const I* ite) {
-    std::cout << "const pointer version" << std::endl;
+    std::cout &lt;&lt; "const pointer version" &lt;&lt; std::endl;
     return *ite;
 }
 int main() {
     // ...
-    MyIter<int> ite(new int(8));
-    cout << func(ite)<<endl;
+    MyIter&lt;int&gt; ite(new int(8));
+    cout &lt;&lt; func(ite)&lt;&lt;endl;
     int *p = new int(52);
-    cout<<func(p)<<endl;
+    cout&lt;&lt;func(p)&lt;&lt;endl;
     const int k = 3;
-    cout<<func(&k)<<endl;
-}</code></pre>
-<p>输出：</p>
+    cout&lt;&lt;func(&amp;k)&lt;&lt;endl;
+}</code></pre><p>输出：</p>
 <pre class=" language-c++"><code class="language-c++">class version
 8
 pointer version
@@ -594,49 +591,48 @@ const pointer version
 <p>在 STL 中 Traits 是什么呢？看下图：</p>
 <p><img src="http://pxz2lirgn.bkt.clouddn.com/trai.png" alt=""></p>
 <p>利用一个中间层<code>iterator_traits</code>固定了<code>func</code>的形式，使得重复的代码大量减少，唯一要做的就是稍稍特化一下 iterator_tartis 使其支持 pointer 和 const pointer:)</p>
-<pre class=" language-c++"><code class="language-c++">#include <iostream>
+<pre><code>#include &lt;iostream&gt;
 
-template <class T>
+template &lt;class T&gt;
 struct MyIter {
     typedef T value_type; // 内嵌型别声明
     T* ptr;
     MyIter(T* p = 0) : ptr(p) {}
-    T& operator*() const { return *ptr; }
+    T&amp; operator*() const { return *ptr; }
 };
 // class type
-template <class T>
+template &lt;class T&gt;
 struct iterator_traits {
     typedef typename T::value_type value_type;
 };
 // 偏特化1
-template <class T>
-struct iterator_traits<T*> {
+template &lt;class T&gt;
+struct iterator_traits&lt;T*&gt; {
     typedef T value_type;
 };
 // 偏特化2
-template <class T>
-struct iterator_traits<const T*> {
+template &lt;class T&gt;
+struct iterator_traits&lt;const T*&gt; {
     typedef T value_type;
 };
 
-template <class I>
-typename iterator_traits<I>::value_type
-// 首先询问iterator_traits<I>::value_type,如果传递的I为指针,则进入特化版本,iterator_traits直接回答;如果传递进来的I为class type,就去询问T::value_type.
+template &lt;class I&gt;
+typename iterator_traits&lt;I&gt;::value_type
+// 首先询问iterator_traits&lt;I&gt;::value_type,如果传递的I为指针,则进入特化版本,iterator_traits直接回答;如果传递进来的I为class type,就去询问T::value_type.
 func(I ite) {
-    std::cout << "normal version" << std::endl;
+    std::cout &lt;&lt; "normal version" &lt;&lt; std::endl;
     return *ite;
 }
 int main() {
     // ...
-    MyIter<int> ite(new int(8));
-    std::cout << func(ite)<<std::endl;
+    MyIter&lt;int&gt; ite(new int(8));
+    std::cout &lt;&lt; func(ite)&lt;&lt;std::endl;
     int *p = new int(52);
-    std::cout<<func(p)<<std::endl;
+    std::cout&lt;&lt;func(p)&lt;&lt;std::endl;
     const int k = 3;
-    std::cout<<func(&k)<<std::endl;
+    std::cout&lt;&lt;func(&amp;k)&lt;&lt;std::endl;
 }
-</code></pre>
-<p>上述的过程是首先询问<code>iterator_traits&lt;I&gt;::value_type</code>，如果传递的 I 为指针,则进入特化版本,<code>iterator_traits</code>直接回答<code>T</code>;如果传递进来的<code>I</code>为<code>class type</code>,就去询问<code>T::value_type</code>.</p>
+</code></pre><p>上述的过程是首先询问<code>iterator_traits&lt;I&gt;::value_type</code>，如果传递的 I 为指针,则进入特化版本,<code>iterator_traits</code>直接回答<code>T</code>;如果传递进来的<code>I</code>为<code>class type</code>,就去询问<code>T::value_type</code>.</p>
 <p>上述的通俗解释为算法(func)问 iterator_traits(我)，但是 iterator_traits(我)发现手上是指针的时候，就由我来替它回答。如果是 class type，iterator_traits(我)就继续问(他—T::value_type)。</p>
 <p><strong>总结：通过定义内嵌类型，我们获得了知晓 iterator 所指元素类型的方法，通过 traits 技法，我们将函数模板对于原生指针和自定义 iterator 的定义都统一起来，我们使用 traits 技法主要是为了解决原生指针和自定义 iterator 之间的不同所造成的代码冗余，这就是 traits 技法的妙处所在。</strong></p>
 <p>学习书籍：</p>
@@ -1364,7 +1360,7 @@ int main() {
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">6k</span>&nbsp;字
+                class="white-color">7k</span>&nbsp;字
             
             
             
