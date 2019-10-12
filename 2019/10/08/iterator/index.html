@@ -468,7 +468,7 @@
                 <h1 id="C-STL源码剖析之实现一个简单的iterator-category"><a href="#C-STL源码剖析之实现一个简单的iterator-category" class="headerlink" title="C++ STL源码剖析之实现一个简单的iterator_category"></a>C++ STL源码剖析之实现一个简单的iterator_category</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0.导语"></a>0.导语</h2><p>本节使用上节Traits特性，研究iterator源码，来实现一个简单的iterator_category，同时对iterator的源码结构进行分析。</p>
 <p><strong>知其然，知其所以然，源码面前了无秘密！</strong></p>
 <h2 id="1-利用萃取机实现一个简单的iterator-category识别"><a href="#1-利用萃取机实现一个简单的iterator-category识别" class="headerlink" title="1.利用萃取机实现一个简单的iterator_category识别"></a>1.利用萃取机实现一个简单的iterator_category识别</h2><p>上一节指出了迭代器的作用，依旧如下图所示：</p>
-<p><img src="http://pxz2lirgn.bkt.clouddn.com/rela.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/rela.png" alt=""></p>
 <p>迭代器是指向序列元素的指针的一种抽象。通过使用迭代器，我们可以访问序列中的某个元素、改变序列中的某个元素的值、使迭代器向前或向后行走等等。</p>
 <p>迭代器有常见有五种类型: value_type, difference_type, reference_type, pointer_type都比较容易在 traits 和相应偏特化中提取。</p>
 <p>但是，iterator_category一般也有5个，这个相应型别会引发较大规模的写代码工程。</p>
@@ -478,7 +478,7 @@
 <li>单向移动读写迭代器 Forward Iterator</li>
 <li>双向移动读写迭代器 Bidirectional Iterator</li>
 </ul>
-<p><img src="http://pxz2lirgn.bkt.clouddn.com/iterator.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/iterator.png" alt=""></p>
 <p>例如：我们实现了 advanceII, advanceBI, advanceRAI 分别代表迭代器类型是Input Iterator，Bidirectional Iterator和Random Access Iterator的对应实现。</p>
 <pre class=" language-c++"><code class="language-c++">template<class Iterator>
 void advance(Iterator& i) {
@@ -494,7 +494,7 @@ void advance(Iterator& i) {
 <p>而对于<code>advanceXX()</code>都有两个函数参数，型别都未定(因为都是模板参数)。为了令其同名，形成重载函数，我们必须加上一个型别已确定的函数参数，使函数重载机制得以有效运作起来。</p>
 <p>设计如下：如果<strong>traits</strong>有能力萃取出迭代器的种类，我们便可利用这个”迭代器类型”相应型别作为advancexx的第三个参数，而这个相应型别必须是一个class type，不能只是数值号码类的东西，因为编译器需依赖它来进行<strong>重载决议</strong>。</p>
 <p>下面来进行实现，首先给出一个总体结构图：</p>
-<p><img src="http://pxz2lirgn.bkt.clouddn.com/itera.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/itera.png" alt=""></p>
 <p>定义出下面tag：</p>
 <pre class=" language-c++"><code class="language-c++">struct input_iterator_tag {};
 struct output_iterator_tag {};

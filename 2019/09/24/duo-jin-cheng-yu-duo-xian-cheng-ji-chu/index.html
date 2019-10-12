@@ -642,7 +642,7 @@ KiB Swap:  2097148 total,  2097148 free,        0 used. 14315608 avail Mem </cod
 <p>那如何通过top命令定位问题进程中每个线程占用cpu情况？</p>
 <p>使用<code>-H</code>,top 命令的 -H 选项的作用是显示每个一个进程的各个线程运行状态（线程模式）。</p>
 <p>例如：</p>
-<pre><code>top -p 2085 -H</code></pre><p><img src="http://pxz2lirgn.bkt.clouddn.com/top.png" alt=""></p>
+<pre><code>top -p 2085 -H</code></pre><p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/top.png" alt=""></p>
 <p>由上图明显可以发现，线程PID 2085 CPU占用率最高，接下来定位该线程的代码是否出现异常导致cpu占用过高。</p>
 <p>结合上述的pstack，例如：</p>
 <pre><code>pstack 2085</code></pre><p>在 pstack 输出的各个线程中，只要逐一对照我们的程序源码来梳理下该线程中是否有大多数时间都处于空转的逻辑，然后修改和优化这些逻辑就可以解决 CPU 使用率过高的问题了，一般情况下，不工作的线程应尽量使用锁对象让其挂起，而不是空转，这样可以提高系统资源利用率。</p>
