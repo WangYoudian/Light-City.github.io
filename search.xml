@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>主题修改</title>
+      <link href="/2019/10/12/zhu-ti-pei-zhi/"/>
+      <url>/2019/10/12/zhu-ti-pei-zhi/</url>
+      
+        <content type="html"><![CDATA[<p>看板娘添加：</p><pre><code>npm install --save hexo-helper-live2d</code></pre><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> 主题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>测试高亮</title>
       <link href="/2019/10/12/ce-shi-gao-liang/"/>
       <url>/2019/10/12/ce-shi-gao-liang/</url>
