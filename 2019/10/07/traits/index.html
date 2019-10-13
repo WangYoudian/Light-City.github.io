@@ -443,7 +443,7 @@
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        2.1k
+                        2.2k
                     </div>
                     
 
@@ -474,36 +474,36 @@
 <p>而在算法中我们可能会定义简单的中间变量或者设定算法的返回变量类型，这时候需要知道迭代器所指元素的类型是什么，但是由于没有 typeof 这类判断类型的函数,我们无法直接获取，那该如何是好？本文就来具体阐述。</p>
 <p>对于迭代器来说就是一种智能指针，因此，它也就拥有了一般指针的所有特点——能够对其进行*和-&gt;操作。但是在遍历容器的时候，不可避免的要对遍历的容器内部有所了解，所以，干脆把迭代器的开发工作交给容器的设计者好了，如此以来，所有实现细节反而得以封装起来不被使用者看到，这正是为什么每一种 STL 容器都提供有专属迭代器的缘故。</p>
 <p>而 Traits 在<code>bits/stl_iterator_base_types.h</code>中：</p>
-<pre class=" language-c++"><code class="language-c++">template<class _Tp>
-struct iterator_traits<_Tp*>
-{
-    typedef ptrdiff_t difference_type;
-    typedef typename _Tp::value_type value_type;
-    typedef typename _Tp::pointer pointer;
-    typedef typename _Tp::reference reference;
-    typedef typename _Tp::iterator_category iterator_category;
-};</code></pre>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token class-name">_Tp</span><span class="token operator">></span>
+<span class="token keyword">struct</span> iterator_traits<span class="token operator">&lt;</span>_Tp<span class="token operator">*</span><span class="token operator">></span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> ptrdiff_t difference_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Tp<span class="token operator">::</span>value_type value_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Tp<span class="token operator">::</span>pointer pointer<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Tp<span class="token operator">::</span>reference reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Tp<span class="token operator">::</span>iterator_category iterator_category<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
 <p>看的一脸懵逼吧，没事，看完本节，入门 STL，哈哈~</p>
 <h2 id="1-template-参数推导"><a href="#1-template-参数推导" class="headerlink" title="1.template 参数推导"></a>1.template 参数推导</h2><p>首先，在算法中运用迭代器时，很可能会用到<strong>其相应型别（associated type）</strong>（迭代器所指之物的型别）。假设算法中有必要声明一个变量，以”迭代器所指对象的型别”为型别，该<strong>怎么办呢？</strong></p>
 <p><strong>解决方法是：利用 function template 的参数推导机制。</strong></p>
 <p>例如：</p>
 <p>如果 T 是某个指向特定对象的指针，那么在 func 中需要指针所指向对象的型别的时候，怎么办呢？这个还比较容易，模板的参数推导机制可以完成任务，</p>
-<pre class=" language-c++"><code class="language-c++">template <class I>
-inline
-void func(I iter) {
-    func_impl(iter, *iter); // 传入iter和iter所指的值，class自动推导
-}</code></pre>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token class-name">I</span><span class="token operator">></span>
+<span class="token keyword">inline</span>
+<span class="token keyword">void</span> <span class="token function">func</span><span class="token punctuation">(</span>I iter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">func_impl</span><span class="token punctuation">(</span>iter<span class="token punctuation">,</span> <span class="token operator">*</span>iter<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 传入iter和iter所指的值，class自动推导</span>
+<span class="token punctuation">}</span></code></pre>
 <p>通过模板的推导机制，我们轻而易举的或得了指针所指向的对象的类型。</p>
-<pre class=" language-c++"><code class="language-c++">template <class I, class T>
-void func_impl(I iter, T t) {
-        T tmp; // 这里就是迭代器所指物的类别
-        // ... 功能实现
-}
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">class</span> <span class="token class-name">I</span><span class="token punctuation">,</span> <span class="token keyword">class</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token keyword">void</span> <span class="token function">func_impl</span><span class="token punctuation">(</span>I iter<span class="token punctuation">,</span> T t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        T tmp<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 这里就是迭代器所指物的类别</span>
+        <span class="token comment" spellcheck="true">// ... 功能实现</span>
+<span class="token punctuation">}</span>
 
-int main() {
-    int i;
-    func(&i);
-}</code></pre>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+    <span class="token function">func</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <p>但是，<strong>函数的”template 参数推导机制”推导的只是参数，无法推导函数的返回值类型。万一需要推导函数的传回值，就无能为力了</strong>。因此，我们引出下面的方法。</p>
 <h2 id="2-声明内嵌型别"><a href="#2-声明内嵌型别" class="headerlink" title="2.声明内嵌型别"></a>2.声明内嵌型别</h2><p><strong>迭代器所指对象的型别，称之为迭代器的 value type。</strong></p>
 <p>尽管在 func_impl 中我们可以把 T 作为函数的返回值，但是问题是用户需要调用的是 func。</p>
@@ -581,12 +581,12 @@ int main() {
     const int k = 3;
     cout&lt;&lt;func(&amp;k)&lt;&lt;endl;
 }</code></pre><p>输出：</p>
-<pre class=" language-c++"><code class="language-c++">class version
-8
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">version</span>
+<span class="token number">8</span>
 pointer version
-52
-const pointer version
-3</code></pre>
+<span class="token number">52</span>
+<span class="token keyword">const</span> pointer version
+<span class="token number">3</span></code></pre>
 <p><strong>（2）加入中间层</strong></p>
 <p>在 STL 中 Traits 是什么呢？看下图：</p>
 <p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/trai.png" alt=""></p>
@@ -1358,7 +1358,7 @@ int main() {
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">12.5k</span>&nbsp;字
+                class="white-color">15.4k</span>&nbsp;字
             
             
             

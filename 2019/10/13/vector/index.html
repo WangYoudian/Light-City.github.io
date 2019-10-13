@@ -1,0 +1,1969 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="C++ STL源码剖析之动态数组vector, fight">
+    <meta name="description" content="STL源码剖析之动态数组vector0.导语vector的数据安排以及操作方式，与array非常相似。两者的唯一差别在于空间的运用的灵活性，array是静态的，一旦配置了就不能改变，而 vector是动态空间，随着元素的加入，它的内部机制会">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>C++ STL源码剖析之动态数组vector | 光城小屋</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">光城小屋</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">光城小屋</div>
+        <div class="logo-desc">
+            
+            Keep Looking,Don&#39;t Settle!
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+<li class="m-nav-item">
+			
+				<a href="/" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-home"></i>
+					
+					首页
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/tags" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-tags"></i>
+					
+					标签
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/categories" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-bookmark"></i>
+					
+					分类
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/archives" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-archive"></i>
+					
+					归档
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/about" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-user-circle"></i>
+					
+					关于
+				</a>
+          
+        </li>
+        
+<li class="m-nav-item">
+			
+				<a href="/friends" class="waves-effect waves-light">
+					
+					<i class="fa-fw fas fa-address-book"></i>
+					
+					友情链接
+				</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/light-city" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/light-city" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        C++ STL源码剖析之动态数组vector
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/C/">
+                                <span class="chip bg-color">C++</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/C/" class="post-category">
+                                C++
+                            </a>
+                        
+                            <a href="/categories/C/STL/" class="post-category">
+                                STL
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-10-13
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        2.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        14 分
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="STL源码剖析之动态数组vector"><a href="#STL源码剖析之动态数组vector" class="headerlink" title="STL源码剖析之动态数组vector"></a>STL源码剖析之动态数组vector</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0.导语"></a>0.导语</h2><p>vector的数据安排以及操作方式，与array非常相似。两者的唯一差别在于空间的运用的灵活性，array是静态的，一旦配置了就不能改变，而 vector是动态空间，随着元素的加入，它的内部机制会自行扩充空间以容纳新元素。下面一起来看一下vector的”内部机制”，怎么来实现空间配置策略的。</p>
+<h2 id="1-vector"><a href="#1-vector" class="headerlink" title="1.vector"></a>1.vector</h2><p>在<code>_Vector_base</code>中开头有两行比较难理解，下面一个一个分析：</p>
+<h3 id="1-1-Tp-alloc-type"><a href="#1-1-Tp-alloc-type" class="headerlink" title="1.1 _Tp_alloc_type"></a>1.1 _Tp_alloc_type</h3><p>开头处定义：</p>
+<pre><code> typedef typename __gnu_cxx::__alloc_traits&lt;_Alloc&gt;::template rebind&lt;_Tp&gt;::other _Tp_alloc_type;</code></pre><p>在<code>__gnu_cxx::__alloc_traits</code>中：对应文件为：<code>ext/alloc_traits.h</code></p>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token operator">></span>
+      <span class="token keyword">struct</span> rebind
+      <span class="token punctuation">{</span> <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Base_type<span class="token operator">::</span><span class="token keyword">template</span> rebind_alloc<span class="token operator">&lt;</span>_Tp<span class="token operator">></span> other<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<p>等价于</p>
+<pre><code>typename __gnu_cxx::__alloc_traits&lt;_Alloc&gt;::template rebind&lt;_Tp&gt;::other </code></pre><p>等价于：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typename</span> _Base_type<span class="token operator">::</span><span class="token keyword">template</span> rebind_alloc<span class="token operator">&lt;</span>_Tp<span class="token operator">></span></code></pre>
+<p>而<code>_Base_type</code>是：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> std<span class="token operator">::</span>allocator_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span>           _Base_type<span class="token punctuation">;</span></code></pre>
+<p>所以上述等价于：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typename</span> std<span class="token operator">::</span>allocator_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token keyword">template</span> rebind_alloc<span class="token operator">&lt;</span>_Tp<span class="token operator">></span></code></pre>
+<p>继续到<code>allocator_traits</code>中寻找</p>
+<p>找到了：</p>
+<pre class=" language-cpp"><code class="language-cpp">  <span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Up<span class="token operator">></span>
+    <span class="token keyword">using</span> rebind_alloc <span class="token operator">=</span> allocator<span class="token operator">&lt;</span>_Up<span class="token operator">></span><span class="token punctuation">;</span></code></pre>
+<p>于是：</p>
+<pre class=" language-cpp"><code class="language-cpp">std<span class="token operator">::</span>allocator_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token keyword">template</span> rebind_alloc<span class="token operator">&lt;</span>_Tp<span class="token operator">></span></code></pre>
+<p>等价于：</p>
+<pre class=" language-cpp"><code class="language-cpp">allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">></span></code></pre>
+<blockquote>
+<p>小结</p>
+</blockquote>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token keyword">template</span> rebind<span class="token operator">&lt;</span>_Tp<span class="token operator">></span><span class="token operator">::</span>other _Tp_alloc_type<span class="token punctuation">;</span></code></pre>
+<p>等价于：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">></span> _Tp_alloc_type</code></pre>
+<h3 id="1-2-pointer"><a href="#1-2-pointer" class="headerlink" title="1.2 pointer"></a>1.2 pointer</h3><p>而<code>pointer</code>：</p>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>_Tp_alloc_type<span class="token operator">></span><span class="token operator">::</span>pointer
+           pointer<span class="token punctuation">;</span></code></pre>
+<p>等价于：</p>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">>></span><span class="token operator">::</span>pointer
+           pointer<span class="token punctuation">;</span></code></pre>
+<p>根据下面两行：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> std<span class="token operator">::</span>allocator_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span>           _Base_type<span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Base_type<span class="token operator">::</span>pointer            pointer<span class="token punctuation">;</span></code></pre>
+<p>又等价于：</p>
+<pre><code> typedef std::allocator_traits&lt;_Alloc&gt;::pointer
+           pointer;</code></pre><p>在<code>allocator_traits</code>中找到下面：</p>
+<pre class=" language-cpp"><code class="language-cpp">  <span class="token comment" spellcheck="true">/**
+   * @brief   The allocator's pointer type.
+   *
+   * @c Alloc::pointer if that type exists, otherwise @c value_type*
+  */</span>
+  <span class="token keyword">typedef</span> __pointer pointer<span class="token punctuation">;</span></code></pre>
+<p>注释中说了如果存在就是<code>Alloc::pointer</code>，否则为<code>value_type *</code>。</p>
+<blockquote>
+<p>小结</p>
+</blockquote>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>_Tp_alloc_type<span class="token operator">></span><span class="token operator">::</span>pointer
+           pointer<span class="token punctuation">;</span>
+ <span class="token comment" spellcheck="true">// 或者</span>
+ <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">>></span><span class="token operator">::</span>pointer
+           pointer<span class="token punctuation">;</span></code></pre>
+<p>等价于</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/**
+* @brief   The allocator's pointer type.
+*
+* @c Alloc::pointer if that type exists, otherwise @c value_type*
+*/</span>
+<span class="token keyword">typedef</span> __pointer pointer<span class="token punctuation">;</span>
+</code></pre>
+<p>如果存在<code>_Tp_alloc_type::pointer</code>也就是<code>allocator&lt;_Tp&gt;</code>存在就是<code>allocator&lt;_Tp&gt;::pointer</code>，</p>
+<p>这个看<code>allocator.h</code>源码：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> _Tp<span class="token operator">*</span>       pointer<span class="token punctuation">;</span>
+</code></pre>
+<p>否则为<code>value_type*</code>。而<code>value_type</code>为：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Alloc<span class="token operator">::</span>value_type value_type<span class="token punctuation">;</span>
+</code></pre>
+<p>所以<code>value_type*</code>推导出为：</p>
+<pre class=" language-cpp"><code class="language-cpp">_Tp<span class="token operator">::</span>value_type<span class="token operator">*</span>
+</code></pre>
+<h3 id="1-3-vector的内存管理"><a href="#1-3-vector的内存管理" class="headerlink" title="1.3 vector的内存管理"></a>1.3 vector的内存管理</h3><p><code>_Vector_base</code>中有一个<strong>内存管理器</strong><code>_Vector_impl</code>类，该结构体继承<code>allocator</code>(根据上述1.1等价条件得出)。</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Alloc<span class="token operator">></span>
+<span class="token keyword">struct</span> _Vector_base <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//__alloc_traits -> allocator_traits</span>
+    <span class="token comment" spellcheck="true">// typedef allocator&lt;_Tp> _Tp_alloc_type</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>_Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token keyword">template</span>
+    rebind<span class="token operator">&lt;</span>_Tp<span class="token operator">></span><span class="token operator">::</span>other _Tp_alloc_type<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//  _Tp::value_type* or _Tp*</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits<span class="token operator">&lt;</span>_Tp_alloc_type<span class="token operator">></span><span class="token operator">::</span>pointer
+            pointer<span class="token punctuation">;</span>
+
+    <span class="token keyword">struct</span> _Vector_impl
+            <span class="token operator">:</span> <span class="token keyword">public</span> _Tp_alloc_type <span class="token punctuation">{</span>
+        pointer _M_start<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">// 使用空间起始位置    </span>
+        pointer _M_finish<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">// 使用空间结束位置</span>
+        pointer _M_end_of_storage<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// 可使用空间结束位置 </span>
+
+        <span class="token function">_Vector_impl</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token operator">:</span> <span class="token function">_Tp_alloc_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">_M_start</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">_M_finish</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">_M_end_of_storage</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+        <span class="token function">_Vector_impl</span><span class="token punctuation">(</span>_Tp_alloc_type <span class="token keyword">const</span> <span class="token operator">&amp;</span>__a<span class="token punctuation">)</span>
+
+        <span class="token comment" spellcheck="true">// vector数据交换，只交换内存地址，不交换数据</span>
+        <span class="token keyword">void</span> <span class="token function">_M_swap_data</span><span class="token punctuation">(</span>_Vector_impl <span class="token operator">&amp;</span>__x<span class="token punctuation">)</span>
+
+        _GLIBCXX_NOEXCEPT
+        <span class="token punctuation">{</span>
+            std<span class="token operator">::</span><span class="token function">swap</span><span class="token punctuation">(</span>_M_start<span class="token punctuation">,</span> __x<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            std<span class="token operator">::</span><span class="token function">swap</span><span class="token punctuation">(</span>_M_finish<span class="token punctuation">,</span> __x<span class="token punctuation">.</span>_M_finish<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            std<span class="token operator">::</span><span class="token function">swap</span><span class="token punctuation">(</span>_M_end_of_storage<span class="token punctuation">,</span> __x<span class="token punctuation">.</span>_M_end_of_storage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">typedef</span> _Alloc allocator_type<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 前面我们知道_Vector_impl继承自allocator分配器，而这个又是_Tp_alloc_type，所以这里返回的就是_M_impl的基类。</span>
+    _Tp_alloc_type <span class="token operator">&amp;</span>
+    <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">static_cast</span><span class="token operator">&lt;</span>_Tp_alloc_type <span class="token operator">*</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> _Tp_alloc_type <span class="token operator">&amp;</span>
+    <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span>
+
+    _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">static_cast</span><span class="token operator">&lt;</span><span class="token keyword">const</span> _Tp_alloc_type <span class="token operator">*</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    allocator_type    <span class="token comment" spellcheck="true">// 获取传递进来的分配器      </span>
+    <span class="token function">get_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span>
+
+    _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">allocator_type</span><span class="token punctuation">(</span><span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span><span class="token keyword">const</span> allocator_type <span class="token operator">&amp;</span>__a<span class="token punctuation">)</span>
+
+    _GLIBCXX_NOEXCEPT
+            <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span>size_t __n<span class="token punctuation">)</span>
+            <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token function">_M_create_storage</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span>size_t __n<span class="token punctuation">,</span> <span class="token keyword">const</span> allocator_type <span class="token operator">&amp;</span>__a<span class="token punctuation">)</span>
+            <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token function">_M_create_storage</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token macro property">#<span class="token directive keyword">if</span> __cplusplus >= 201103L</span>
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span>_Tp_alloc_type<span class="token operator">&amp;&amp;</span> __a<span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span>std<span class="token operator">::</span><span class="token function">move</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 移动构造函数，只交换3个指针，不copy数据</span>
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span>_Vector_base<span class="token operator">&amp;&amp;</span> __x<span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span>std<span class="token operator">::</span><span class="token function">move</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span><span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span><span class="token function">_M_swap_data</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span>_M_impl<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token function">_Vector_base</span><span class="token punctuation">(</span>_Vector_base<span class="token operator">&amp;&amp;</span> __x<span class="token punctuation">,</span> <span class="token keyword">const</span> allocator_type<span class="token operator">&amp;</span> __a<span class="token punctuation">)</span>
+    <span class="token operator">:</span> <span class="token function">_M_impl</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>__x<span class="token punctuation">.</span><span class="token function">get_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> __a<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span><span class="token function">_M_swap_data</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span>_M_impl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">else</span>
+    <span class="token punctuation">{</span>
+      size_t __n <span class="token operator">=</span> __x<span class="token punctuation">.</span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">-</span> __x<span class="token punctuation">.</span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">;</span>
+      <span class="token function">_M_create_storage</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+
+    <span class="token operator">~</span><span class="token function">_Vector_base</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span>
+        <span class="token function">_M_deallocate</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage
+                                              <span class="token operator">-</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    _Vector_impl _M_impl<span class="token punctuation">;</span>
+
+    pointer <span class="token function">_M_allocate</span><span class="token punctuation">(</span>size_t __n<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">typedef</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits <span class="token operator">&lt;</span>_Tp_alloc_type<span class="token operator">></span> _Tr<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> __n <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">?</span> _Tr<span class="token operator">::</span><span class="token function">allocate</span><span class="token punctuation">(</span>_M_impl<span class="token punctuation">,</span> __n<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 同_M_deallocate，一直往后调用的就是malloc函数</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">void</span> <span class="token function">_M_deallocate</span><span class="token punctuation">(</span>pointer __p<span class="token punctuation">,</span> size_t __n<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">typedef</span> __gnu_cxx<span class="token operator">::</span>__alloc_traits <span class="token operator">&lt;</span>_Tp_alloc_type<span class="token operator">></span> _Tr<span class="token punctuation">;</span> 
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>__p<span class="token punctuation">)</span>
+            _Tr<span class="token operator">::</span><span class="token function">deallocate</span><span class="token punctuation">(</span>_M_impl<span class="token punctuation">,</span> __p<span class="token punctuation">,</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 最后调用allocator_traits的deallocate,而该函数又是根据传递进来的_M_impl进行deallocate,一直往后，最后调用的就是free函数</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">private</span><span class="token operator">:</span>
+    <span class="token keyword">void</span> <span class="token function">_M_create_storage</span><span class="token punctuation">(</span>size_t __n<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start <span class="token operator">=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">_M_allocate</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage <span class="token operator">=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start <span class="token operator">+</span> __n<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<p>小结：<code>_Vector_base</code>专门负责<code>vector</code>的内存管理，内部类<code>_M_impl</code>通过继承<code>_Tp_alloc_type</code>(也就是allocator)得到内存分配释放的功能，<em>M</em>allocate和<em>M</em>deallocate分别分配和释放vector所用内存，vector只需要负责元素构造和析构。</p>
+<p>在vector中，默认内存分配器为<code>std::allocator&lt;_Tp&gt;</code></p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Alloc <span class="token operator">=</span> std<span class="token operator">::</span>allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">>></span>
+<span class="token keyword">class</span> <span class="token class-name">vector</span> <span class="token operator">:</span> <span class="token keyword">protected</span> _Vector_base<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span> <span class="token punctuation">{</span>
+<span class="token punctuation">}</span></code></pre>
+<p>vector代码中使用基类的内存函数及typedef等：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Alloc <span class="token operator">=</span> std<span class="token operator">::</span>allocator<span class="token operator">&lt;</span>_Tp<span class="token operator">>></span>
+<span class="token keyword">class</span> <span class="token class-name">vector</span> <span class="token operator">:</span> <span class="token keyword">protected</span> _Vector_base<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> _Vector_base<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span> _Base<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Base<span class="token operator">::</span>_Tp_alloc_type _Tp_alloc_type<span class="token punctuation">;</span>
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> _Base<span class="token operator">::</span>pointer pointer<span class="token punctuation">;</span>
+<span class="token keyword">protected</span><span class="token operator">:</span>
+    <span class="token keyword">using</span> _Base<span class="token operator">::</span>_M_allocate<span class="token punctuation">;</span>
+    <span class="token keyword">using</span> _Base<span class="token operator">::</span>_M_deallocate<span class="token punctuation">;</span>
+    <span class="token keyword">using</span> _Base<span class="token operator">::</span>_M_impl<span class="token punctuation">;</span>
+    <span class="token keyword">using</span> _Base<span class="token operator">::</span>_M_get_Tp_allocator<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="2-vector迭代器"><a href="#2-vector迭代器" class="headerlink" title="2.vector迭代器"></a>2.vector迭代器</h2><p>在vector中使用了两种迭代器，分别是正向<code>__normal_iterator</code>与反向迭代器<code>reverse_iterator</code>:</p>
+<p>正向：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> __gnu_cxx<span class="token operator">::</span>__normal_iterator <span class="token operator">&lt;</span>pointer<span class="token punctuation">,</span> vector<span class="token operator">></span> iterator<span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> __gnu_cxx<span class="token operator">::</span>__normal_iterator <span class="token operator">&lt;</span>const_pointer<span class="token punctuation">,</span> vector<span class="token operator">></span> const_iterator<span class="token punctuation">;</span></code></pre>
+<p>反向：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>const_iterator<span class="token operator">></span> const_reverse_iterator<span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>iterator<span class="token operator">></span> reverse_iterator<span class="token punctuation">;</span></code></pre>
+<p><code>__normal_iterator</code>与<code>reverse_iterator</code>都定义于stl_iterator.h，封装了vector元素的指针。</p>
+<h3 id="2-1-正向"><a href="#2-1-正向" class="headerlink" title="2.1 正向"></a>2.1 正向</h3><pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Iterator<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Container<span class="token operator">></span>
+<span class="token keyword">class</span> <span class="token class-name">__normal_iterator</span>
+<span class="token punctuation">{</span>
+<span class="token keyword">protected</span><span class="token operator">:</span>
+    _Iterator _M_current<span class="token punctuation">;</span>
+
+    <span class="token keyword">typedef</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span>        __traits_type<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">typedef</span> _Iterator                    iterator_type<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// iterator必须包含的五种typedef</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>iterator_category iterator_category<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>value_type      value_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>difference_type     difference_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>reference     reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>pointer       pointer<span class="token punctuation">;</span>
+
+    _GLIBCXX_CONSTEXPR <span class="token function">__normal_iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token operator">:</span> <span class="token function">_M_current</span><span class="token punctuation">(</span><span class="token function">_Iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    <span class="token keyword">explicit</span>
+    <span class="token function">__normal_iterator</span><span class="token punctuation">(</span><span class="token keyword">const</span> _Iterator<span class="token operator">&amp;</span> __i<span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token operator">:</span> <span class="token function">_M_current</span><span class="token punctuation">(</span>__i<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Allow iterator to const_iterator conversion</span>
+    <span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Iter<span class="token operator">></span>
+    <span class="token function">__normal_iterator</span><span class="token punctuation">(</span><span class="token keyword">const</span> __normal_iterator<span class="token operator">&lt;</span>_Iter<span class="token punctuation">,</span>
+            <span class="token keyword">typename</span> __enable_if<span class="token operator">&lt;</span>
+            <span class="token punctuation">(</span>std<span class="token operator">::</span>__are_same<span class="token operator">&lt;</span>_Iter<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Container<span class="token operator">::</span>pointer<span class="token operator">></span><span class="token operator">::</span>__value<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            _Container<span class="token operator">></span><span class="token operator">::</span>__type<span class="token operator">></span><span class="token operator">&amp;</span> __i<span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token operator">:</span> <span class="token function">_M_current</span><span class="token punctuation">(</span>__i<span class="token punctuation">.</span><span class="token function">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Forward iterator requirements</span>
+    reference
+    <span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">*</span>_M_current<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    pointer
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> _M_current<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 前置++</span>
+    __normal_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">++</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span>
+        <span class="token operator">++</span>_M_current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 后置++</span>
+    __normal_iterator
+    <span class="token keyword">operator</span><span class="token operator">++</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">__normal_iterator</span><span class="token punctuation">(</span>_M_current<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 前置--</span>
+    <span class="token comment" spellcheck="true">// Bidirectional iterator requirements</span>
+    __normal_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">--</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span>
+        <span class="token operator">--</span>_M_current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 后置--</span>
+    __normal_iterator
+    <span class="token keyword">operator</span><span class="token operator">--</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">__normal_iterator</span><span class="token punctuation">(</span>_M_current<span class="token operator">--</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 随机访问迭代器都要重载[]操作符</span>
+    <span class="token comment" spellcheck="true">// Random access iterator requirements</span>
+    reference
+    <span class="token keyword">operator</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> _M_current<span class="token punctuation">[</span>__n<span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// +=操作符 跳跃n个difference_type</span>
+    __normal_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">+</span><span class="token operator">=</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> _M_current <span class="token operator">+</span><span class="token operator">=</span> __n<span class="token punctuation">;</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// +操作符 跳跃n个difference_type</span>
+    __normal_iterator
+    <span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">__normal_iterator</span><span class="token punctuation">(</span>_M_current <span class="token operator">+</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// -=操作符 后退n个difference_type</span>
+    __normal_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token operator">=</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> _M_current <span class="token operator">-</span><span class="token operator">=</span> __n<span class="token punctuation">;</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// -操作符 后退n个difference_type</span>
+    __normal_iterator
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">__normal_iterator</span><span class="token punctuation">(</span>_M_current <span class="token operator">-</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> _Iterator<span class="token operator">&amp;</span>
+    <span class="token function">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> _M_current<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<p><em>M</em>current是指向迭代器位置的指针，这是一个随机访问型指针，operator+和operator-等移动操作可以直接移动到目的地，非随机访问型指针只能一步步移动。</p>
+<h3 id="2-2-反向"><a href="#2-2-反向" class="headerlink" title="2.2 反向"></a>2.2 反向</h3><p>vector还会使用reverse_iterator，即逆序迭代器，顾名思义，其移动方向与普通迭代器相反</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Iterator<span class="token operator">></span>
+<span class="token keyword">class</span> <span class="token class-name">reverse_iterator</span>
+<span class="token operator">:</span> <span class="token keyword">public</span> iterator<span class="token operator">&lt;</span><span class="token keyword">typename</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span><span class="token operator">::</span>iterator_category<span class="token punctuation">,</span>
+            <span class="token keyword">typename</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span><span class="token operator">::</span>value_type<span class="token punctuation">,</span>
+            <span class="token keyword">typename</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span><span class="token operator">::</span>difference_type<span class="token punctuation">,</span>
+            <span class="token keyword">typename</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span><span class="token operator">::</span>pointer<span class="token punctuation">,</span>
+                    <span class="token keyword">typename</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span><span class="token operator">::</span>reference<span class="token operator">></span>
+<span class="token punctuation">{</span>
+<span class="token keyword">protected</span><span class="token operator">:</span>
+    _Iterator current<span class="token punctuation">;</span>
+
+    <span class="token keyword">typedef</span> iterator_traits<span class="token operator">&lt;</span>_Iterator<span class="token operator">></span>        __traits_type<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">typedef</span> _Iterator                    iterator_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>difference_type    difference_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>pointer        pointer<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">typename</span> __traits_type<span class="token operator">::</span>reference        reference<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 省略不重要的代码</span>
+
+
+    <span class="token comment" spellcheck="true">// 该迭代器是从后面end()开始，需要往前一步，才可以获取到有效的迭代器位置</span>
+    reference
+    <span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span>
+    <span class="token punctuation">{</span>
+        _Iterator __tmp <span class="token operator">=</span> current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token operator">--</span>__tmp<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 通过调用上述*操作符直接实现</span>
+    pointer
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">&amp;</span><span class="token punctuation">(</span><span class="token keyword">operator</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+
+    <span class="token comment" spellcheck="true">// 前置++操作符完成后退任务</span>
+    reverse_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">++</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token operator">--</span>current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 后置++</span>
+    reverse_iterator
+    <span class="token keyword">operator</span><span class="token operator">++</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        reverse_iterator __tmp <span class="token operator">=</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token operator">--</span>current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> __tmp<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 前置--操作符完成前进任务</span>
+    reverse_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">--</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token operator">++</span>current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 后置--</span>
+    reverse_iterator
+    <span class="token keyword">operator</span><span class="token operator">--</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        reverse_iterator __tmp <span class="token operator">=</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token operator">++</span>current<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> __tmp<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// +操作符</span>
+    reverse_iterator
+    <span class="token keyword">operator</span><span class="token operator">+</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">reverse_iterator</span><span class="token punctuation">(</span>current <span class="token operator">-</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// +=操作符</span>
+    reverse_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">+</span><span class="token operator">=</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        current <span class="token operator">-</span><span class="token operator">=</span> __n<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// -操作符</span>
+    reverse_iterator
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">reverse_iterator</span><span class="token punctuation">(</span>current <span class="token operator">+</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// -=操作符</span>
+    reverse_iterator<span class="token operator">&amp;</span>
+    <span class="token keyword">operator</span><span class="token operator">-</span><span class="token operator">=</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        current <span class="token operator">+</span><span class="token operator">=</span> __n<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// []操作符</span>
+    reference
+    <span class="token keyword">operator</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span>difference_type __n<span class="token punctuation">)</span> <span class="token keyword">const</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token keyword">this</span> <span class="token operator">+</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="3-vector的数据结构"><a href="#3-vector的数据结构" class="headerlink" title="3.vector的数据结构"></a>3.vector的数据结构</h2><p>vector内存由<em>M</em>impl中的M_start，<em>M</em>finish，<em>M</em>end_of_storage三个指针管理，所有关于地址，容量大小等操作都需要用到这三个指针：</p>
+<pre class=" language-cpp"><code class="language-cpp">iterator <span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">iterator</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+iterator <span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">iterator</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+reverse_iterator  <span class="token function">rbegin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">reverse_iterator</span><span class="token punctuation">(</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+reverse_iterator <span class="token function">rend</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">reverse_iterator</span><span class="token punctuation">(</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+size_type <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">size_type</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">-</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+size_type <span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">size_type</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage <span class="token operator">-</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token keyword">bool</span> <span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> _GLIBCXX_NOEXCEPT
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/vector_1.png" alt="vector_1.png"></p>
+<p><em>M</em>finish和<em>M</em>end_of_storage之间的空间没有数据，有时候这是一种浪费，c++11提供了一个很有用的函数shrink_to_fit()，将这段未使用空间释放，主要调用了下面代码，</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Alloc<span class="token operator">></span>
+<span class="token keyword">bool</span> vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token punctuation">,</span> _Alloc<span class="token operator">></span><span class="token operator">::</span>
+<span class="token function">_M_shrink_to_fit</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token keyword">int</span><span class="token punctuation">(</span>_S_word_bit<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 64位系统为64bytes</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    __try
+    <span class="token punctuation">{</span>
+        <span class="token function">_M_reallocate</span><span class="token punctuation">(</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">__catch</span><span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span> 
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span> 
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class=" language-cpp"><code class="language-cpp"> <span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Alloc<span class="token operator">></span>
+<span class="token keyword">void</span> vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token punctuation">,</span> _Alloc<span class="token operator">></span><span class="token operator">::</span>
+<span class="token function">_M_reallocate</span><span class="token punctuation">(</span>size_type __n<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    _Bit_type<span class="token operator">*</span> __q <span class="token operator">=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">_M_allocate</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">=</span> <span class="token function">_M_copy_aligned</span><span class="token punctuation">(</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token function">iterator</span><span class="token punctuation">(</span>__q<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">_M_deallocate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start <span class="token operator">=</span> <span class="token function">iterator</span><span class="token punctuation">(</span>__q<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage <span class="token operator">=</span> __q <span class="token operator">+</span> <span class="token function">_S_nword</span><span class="token punctuation">(</span>__n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>而<code>_M_copy_aligned</code>通过两个std::copy实现:</p>
+<p>第一次swap把<code>__first</code>的指针与<code>__last</code>的指针之间的数据拷贝到<code>__result</code>指针所指向的起始位置。<br>第二次swap获得<code>__last</code>的指针对应的迭代器。</p>
+<pre class=" language-cpp"><code class="language-cpp">iterator
+<span class="token function">_M_copy_aligned</span><span class="token punctuation">(</span>const_iterator __first<span class="token punctuation">,</span> const_iterator __last<span class="token punctuation">,</span>
+        iterator __result<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// _Bit_type * _M_p; _Bit_type为unsigned long类型</span>
+    _Bit_type<span class="token operator">*</span> __q <span class="token operator">=</span> std<span class="token operator">::</span><span class="token function">copy</span><span class="token punctuation">(</span>__first<span class="token punctuation">.</span>_M_p<span class="token punctuation">,</span> __last<span class="token punctuation">.</span>_M_p<span class="token punctuation">,</span> __result<span class="token punctuation">.</span>_M_p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> std<span class="token operator">::</span><span class="token function">copy</span><span class="token punctuation">(</span><span class="token function">const_iterator</span><span class="token punctuation">(</span>__last<span class="token punctuation">.</span>_M_p<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> __last<span class="token punctuation">,</span>
+            <span class="token function">iterator</span><span class="token punctuation">(</span>__q<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>先分配size()大小的内存空间，用于存储<code>begin()</code>与<code>end()</code>之间的数据，释放原来的vector空间，新的vector只包含size()数量的数据，并修改<code>_M_start</code>与<code>_M_end_of_storage</code>指向。</p>
+<h2 id="4-vector构造与析构"><a href="#4-vector构造与析构" class="headerlink" title="4.vector构造与析构"></a>4.vector构造与析构</h2><pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//使用默认内存分配器</span>
+<span class="token function">vector</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span> 
+<span class="token comment" spellcheck="true">//指定内存分配器</span>
+<span class="token keyword">explicit</span> <span class="token function">vector</span><span class="token punctuation">(</span><span class="token keyword">const</span> allocator_type<span class="token operator">&amp;</span> __a<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//初始化为n个__value值，如果没指定就使用该类型默认值</span>
+<span class="token keyword">explicit</span> <span class="token function">vector</span><span class="token punctuation">(</span>size_type __n<span class="token punctuation">,</span> <span class="token keyword">const</span> value_type<span class="token operator">&amp;</span> __value <span class="token operator">=</span> <span class="token function">value_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token keyword">const</span> allocator_type<span class="token operator">&amp;</span> __a <span class="token operator">=</span> <span class="token function">allocator_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>__n<span class="token punctuation">,</span> __a<span class="token punctuation">)</span>
+<span class="token punctuation">{</span> <span class="token function">_M_fill_initialize</span><span class="token punctuation">(</span>__n<span class="token punctuation">,</span> __value<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//拷贝构造函数</span>
+<span class="token function">vector</span><span class="token punctuation">(</span><span class="token keyword">const</span> vector<span class="token operator">&amp;</span> __x<span class="token punctuation">)</span>
+    <span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    _Alloc_traits<span class="token operator">::</span><span class="token function">_S_select_on_copy</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span><span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">=</span>
+    std<span class="token operator">::</span><span class="token function">__uninitialized_copy_a</span><span class="token punctuation">(</span>__x<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> __x<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span>
+                                <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//c++11的移动构造函数，获取__x的M_start，_M_finish，_M_end_of_storage，并不需要数据拷贝</span>
+<span class="token function">vector</span><span class="token punctuation">(</span>vector<span class="token operator">&amp;&amp;</span> <span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>std<span class="token operator">::</span><span class="token function">move</span><span class="token punctuation">(</span>__x<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//从list中拷贝数据，也是c++11才有的</span>
+ <span class="token function">vector</span><span class="token punctuation">(</span>initializer_list<span class="token operator">&lt;</span>value_type<span class="token operator">></span> __l<span class="token punctuation">,</span>
+        <span class="token keyword">const</span> allocator_type<span class="token operator">&amp;</span> __a <span class="token operator">=</span> <span class="token function">allocator_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">_M_range_initialize</span><span class="token punctuation">(</span>__l<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> __l<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">random_access_iterator_tag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//支持vector使用两个迭代器范围内的值初始化，除了stl的迭代器，也可以是数组地址</span>
+<span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _InputIterator<span class="token punctuation">,</span>
+        <span class="token keyword">typename</span> <span class="token operator">=</span> std<span class="token operator">::</span>_RequireInputIter<span class="token operator">&lt;</span>_InputIterator<span class="token operator">>></span>
+<span class="token function">vector</span><span class="token punctuation">(</span>_InputIterator __first<span class="token punctuation">,</span> _InputIterator __last<span class="token punctuation">,</span>
+        <span class="token keyword">const</span> allocator_type<span class="token operator">&amp;</span> __a <span class="token operator">=</span> <span class="token function">allocator_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">:</span> <span class="token function">_Base</span><span class="token punctuation">(</span>__a<span class="token punctuation">)</span>
+<span class="token punctuation">{</span> <span class="token function">_M_initialize_dispatch</span><span class="token punctuation">(</span>__first<span class="token punctuation">,</span> __last<span class="token punctuation">,</span> <span class="token function">__false_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//只析构所有元素，释放内存由vector_base完成</span>
+<span class="token operator">~</span><span class="token function">vector</span><span class="token punctuation">(</span><span class="token punctuation">)</span> _GLIBCXX_NOEXCEPT
+<span class="token punctuation">{</span> std<span class="token operator">::</span><span class="token function">_Destroy</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">,</span><span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<h2 id="5-vector"><a href="#5-vector" class="headerlink" title="5.vector"></a>5.vector</h2><p>插入涉及到内存分配，动态调整，与一开始提到的vector与array区别，就在下面体现出：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typename</span> vector<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span><span class="token operator">::</span>iterator
+vector<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token function">insert</span><span class="token punctuation">(</span>iterator __position<span class="token punctuation">,</span> <span class="token keyword">const</span> value_type<span class="token operator">&amp;</span> __x<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">const</span> size_type __n <span class="token operator">=</span> __position – <span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//插入到最后一个位置，相当于push_back</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">!=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage
+        <span class="token operator">&amp;&amp;</span> __position <span class="token operator">==</span> <span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _Alloc_traits<span class="token operator">::</span><span class="token function">construct</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">,</span> __x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">++</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">{</span>
+        <span class="token function">_M_insert_aux</span><span class="token punctuation">(</span>__position<span class="token punctuation">,</span> __x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token function">iterator</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start <span class="token operator">+</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>其中<code>_M_insert_aux</code>实现：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> <span class="token keyword">typename</span> _Alloc<span class="token operator">></span>
+<span class="token keyword">void</span> vector<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Alloc<span class="token operator">></span><span class="token operator">::</span><span class="token function">_M_insert_aux</span><span class="token punctuation">(</span>iterator __position<span class="token punctuation">,</span> <span class="token keyword">const</span> _Tp<span class="token operator">&amp;</span> __x<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>   
+    <span class="token comment" spellcheck="true">//内存空间足够</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">!=</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span> 
+        _Alloc_traits<span class="token operator">::</span><span class="token function">construct</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">,</span>
+                                <span class="token function">_GLIBCXX_MOVE</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish
+                                                <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">++</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//__position后的元素依次向后移动一个位置</span>
+        <span class="token function">_GLIBCXX_MOVE_BACKWARD3</span><span class="token punctuation">(</span>__position<span class="token punctuation">.</span><span class="token function">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">,</span>
+                                <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish – <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//目标地址赋值</span>
+        <span class="token operator">*</span>__position <span class="token operator">=</span> <span class="token function">_Tp</span><span class="token punctuation">(</span>std<span class="token operator">::</span>forward<span class="token operator">&lt;</span>_Args<span class="token operator">></span><span class="token punctuation">(</span>__args<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//内存加倍</span>
+        <span class="token keyword">const</span> size_type __len <span class="token operator">=</span>
+        <span class="token function">_M_check_len</span><span class="token punctuation">(</span><span class="token function">size_type</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"vector::_M_insert_aux"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> size_type __elems_before <span class="token operator">=</span> __position <span class="token operator">-</span> <span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        pointer <span class="token function">__new_start</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">_M_allocate</span><span class="token punctuation">(</span>__len<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        pointer <span class="token function">__new_finish</span><span class="token punctuation">(</span>__new_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        __try
+        <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//给position位置赋值</span>
+            _Alloc_traits<span class="token operator">::</span><span class="token function">construct</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">,</span>
+                                    __new_start <span class="token operator">+</span> __elems_before<span class="token punctuation">,</span>
+                                    std<span class="token operator">::</span>forward<span class="token operator">&lt;</span>_Args<span class="token operator">></span><span class="token punctuation">(</span>__args<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                    __x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            __new_finish <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//拷贝position位置前元素</span>
+            __new_finish <span class="token operator">=</span> std<span class="token operator">::</span><span class="token function">__uninitialized_move_if_noexcept_a</span>
+            <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span> __position<span class="token punctuation">.</span><span class="token function">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                __new_start<span class="token punctuation">,</span> <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token operator">++</span>__new_finish<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//拷贝position位置后元素</span>
+            __new_finish
+            <span class="token operator">=</span> std<span class="token operator">::</span><span class="token function">__uninitialized_move_if_noexcept_a</span>
+            <span class="token punctuation">(</span>__position<span class="token punctuation">.</span><span class="token function">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">,</span>
+                __new_finish<span class="token punctuation">,</span> <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token function">__catch</span><span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>__new_finish<span class="token punctuation">)</span>
+            _Alloc_traits<span class="token operator">::</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">,</span>
+                                    __new_start <span class="token operator">+</span> __elems_before<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+            std<span class="token operator">::</span><span class="token function">_Destroy</span><span class="token punctuation">(</span>__new_start<span class="token punctuation">,</span> __new_finish<span class="token punctuation">,</span> <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">_M_deallocate</span><span class="token punctuation">(</span>__new_start<span class="token punctuation">,</span> __len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            __throw_exception_again<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">//析构原vector所有元素</span>
+        std<span class="token operator">::</span><span class="token function">_Destroy</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish<span class="token punctuation">,</span>
+                    <span class="token function">_M_get_Tp_allocator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//释放原vector内存空间</span>
+        <span class="token function">_M_deallocate</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">,</span>
+                    <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage，<span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//vector内存地址指向新空间</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_start <span class="token operator">=</span> __new_start<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_finish <span class="token operator">=</span> __new_finish<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>_M_impl<span class="token punctuation">.</span>_M_end_of_storage <span class="token operator">=</span> __new_start <span class="token operator">+</span> __len<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>其中<code>_M_check_len</code>：</p>
+<pre class=" language-cpp"><code class="language-cpp">
+size_type
+<span class="token function">_M_check_len</span><span class="token punctuation">(</span>size_type __n<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> __s<span class="token punctuation">)</span> <span class="token keyword">const</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">max_size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> __n<span class="token punctuation">)</span>
+        <span class="token function">__throw_length_error</span><span class="token punctuation">(</span><span class="token function">__N</span><span class="token punctuation">(</span>__s<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> size_type __len <span class="token operator">=</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> std<span class="token operator">::</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> __n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//如果n小于当前size，内存加倍，否则内存增长n。</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>__len <span class="token operator">&lt;</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> __len <span class="token operator">></span> <span class="token function">max_size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">max_size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> __len<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>内存分配策略并不是简单的加倍，如果n小于当前size，内存加倍，否则内存增长n。</p>
+<p>学习资料：</p>
+<blockquote>
+<p>侯捷《STL源码剖析》</p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.cnblogs.com/coderkian/p/3888429.html" target="_blank" rel="noopener">https://www.cnblogs.com/coderkian/p/3888429.html</a></p>
+</blockquote>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+	   <div align="center"><img src="http://pxz2lirgn.bkt.clouddn.com/wechat.jpg" /></div> 
+        <p class="notice" align="center">更多内容，订阅公众号</p>
+<br/>
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <a  href="/2019/10/13/vector/">
+                    《C++ STL源码剖析之动态数组vector》
+            </a> 由
+            <a href="http://light-city.club">
+                light-city
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="https://unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'WyHVjPB40WFwjH0cgX5a5mlY-gzGzoHsz',
+        appKey: 'CF3cbOKRONnoKlvFWdLIy6j6',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '一起来畅言吧~~~'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2019/10/13/vector/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="C++ STL源码剖析之动态数组vector">
+                        
+                        <span class="card-title">C++ STL源码剖析之动态数组vector</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            C++ STL源码剖析之动态数组vector
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/C/" class="post-category">
+                                    C++
+                                </a>
+                            
+                            <a href="/categories/C/STL/" class="post-category">
+                                    STL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/C/">
+                        <span class="chip bg-color">C++</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/10/12/zhu-ti-pei-zhi/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="主题修改">
+                        
+                        <span class="card-title">主题修改</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            主题修改
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-12
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/主题/" class="post-category">
+                                    主题
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/hexo/">
+                        <span class="chip bg-color">hexo</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">年份</span>
+            <a href="http://light-city.club" target="_blank">light-city</a>
+            |&nbsp;Powered by&nbsp;<a href="http://light-city.club/" target="_blank">light-city</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">15.4k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    window.setTimeout("siteTime()", 1000);
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/light-city" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="https://www.zhihu.com/people/francis-52-23/activities" class="tooltipped" target="_blank" data-tooltip="关注我的知乎: https://www.zhihu.com/people/francis-52-23/activities" data-position="top" data-delay="50">
+        <i class="fab fa-zhihu1">知</i>
+    </a>
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i["DaoVoiceObject"] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            a.charset = "utf-8";
+            m.parentNode.insertBefore(a, m)
+        })(window, document, "script", ('https:' == document.location.protocol ? 'https:' : 'http:') +
+            "//widget.daovoice.io/widget/6984b559.js", "daovoice")
+        daovoice('init', {
+            app_id: ""
+        });
+        daovoice('update');
+    </script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>
