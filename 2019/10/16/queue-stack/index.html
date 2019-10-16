@@ -504,8 +504,9 @@
 <span class="token punctuation">}</span>
 </code></pre>
 <blockquote>
-<p>测试stack底层容器<br>对于stack来说，底层容器可以是<code>vector</code>、<code>deque</code>、<code>list</code>，但不可以是<code>map</code>、<code>set</code>。<br>由于编译器不会做全面性检查，当调用函数不存在的时候，就编译不通过，所以对于像set虽然不能作为底层容器，但如果具有某些函数，调用仍然是成功的，直到调用的函数不存在。</p>
+<p>测试stack底层容器</p>
 </blockquote>
+<p>对于stack来说，底层容器可以是<code>vector</code>、<code>deque</code>、<code>list</code>，但不可以是<code>map</code>、<code>set</code>。<br>由于编译器不会做全面性检查，当调用函数不存在的时候，就编译不通过，所以对于像set虽然不能作为底层容器，但如果具有某些函数，调用仍然是成功的，直到调用的函数不存在。</p>
 <pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">test_stack</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     cout<span class="token operator">&lt;&lt;</span><span class="token string">"============test_stack============="</span><span class="token operator">&lt;&lt;</span>endl<span class="token punctuation">;</span>
     clock_t timeStart <span class="token operator">=</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -669,7 +670,7 @@
     cout <span class="token operator">&lt;&lt;</span> <span class="token string">"stack.top()= "</span> <span class="token operator">&lt;&lt;</span> c2<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
     cout <span class="token operator">&lt;&lt;</span> <span class="token string">"use stack milli-seconds : "</span> <span class="token operator">&lt;&lt;</span> <span class="token punctuation">(</span><span class="token function">clock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> timeStart<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-<p>因此，queue不被称为容器，queue 有时也把它称为容器配接器。</p>
+<p><strong>因此，stack、queue、priority_queue不被称为容器， 把它称为容器配接器。</strong></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
