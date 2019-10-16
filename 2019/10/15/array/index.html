@@ -4,11 +4,9 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="主题修改, fight">
-    <meta name="description" content="看板娘添加：
-npm install --save hexo-helper-live2d
-        document.querySelectorAll(&#39;.github-emoji&#39;)
-          .forEach(el =&gt;">
+    <meta name="keywords" content="C++ STL源码剖析 tr1与std array, fight">
+    <meta name="description" content="C++ STL源码剖析 tr1与std array0.导语源码剖析版本为gcc4.9.1。
+C++ tr1全称Technical Report 1，是针对C++标准库的第一次扩展。即将到来的下一个版本的C++标准c++0x会包括它，以及一些">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +14,7 @@ npm install --save hexo-helper-live2d
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>主题修改 | 光城小屋</title>
+    <title>C++ STL源码剖析 tr1与std array | 光城小屋</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -287,13 +285,13 @@ npm install --save hexo-helper-live2d
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        主题修改
+                        C++ STL源码剖析 tr1与std array
                     </div>
                 </div>
             </div>
@@ -405,8 +403,12 @@ npm install --save hexo-helper-live2d
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/hexo/">
-                                <span class="chip bg-color">hexo</span>
+                            <a href="/tags/C/">
+                                <span class="chip bg-color">C++</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
                             </a>
                         
                     </div>
@@ -417,8 +419,12 @@ npm install --save hexo-helper-live2d
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/主题/" class="post-category">
-                                主题
+                            <a href="/categories/C/" class="post-category">
+                                C++
+                            </a>
+                        
+                            <a href="/categories/C/STL/" class="post-category">
+                                STL
                             </a>
                         
                     </div>
@@ -429,21 +435,21 @@ npm install --save hexo-helper-live2d
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-10-12
+                    2019-10-15
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        63
+                        826
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        1 分
+                        3 分
                     </div>
                     
                 
@@ -459,8 +465,97 @@ npm install --save hexo-helper-live2d
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>看板娘添加：</p>
-<pre><code>npm install --save hexo-helper-live2d</code></pre><script>
+                <h1 id="C-STL源码剖析-tr1与std-array"><a href="#C-STL源码剖析-tr1与std-array" class="headerlink" title="C++ STL源码剖析 tr1与std array"></a>C++ STL源码剖析 tr1与std array</h1><h2 id="0-导语"><a href="#0-导语" class="headerlink" title="0.导语"></a>0.导语</h2><p>源码剖析版本为gcc4.9.1。</p>
+<p>C++ tr1全称Technical Report 1，是针对C++标准库的第一次扩展。即将到来的下一个版本的C++标准c++0x会包括它，以及一些语言本身的扩充。tr1包括大家期待已久的smart pointer，正则表达式以及其他一些支持范型编程的内容。草案阶段，新增的类和模板的名字空间是std::tr1。</p>
+<h2 id="1-std-tr1-array"><a href="#1-std-tr1-array" class="headerlink" title="1.std::tr1::array"></a>1.std::tr1::array</h2><p>使用：</p>
+<pre><code>#include &lt;tr1/array&gt;
+std::tr1::array&lt;int ,10&gt; a;</code></pre><p>tr1中的array比较简单，模拟语言本身的数组，并且让其支持迭代器操作，使其同其他容器一样，能够调用算法。对于tr1中array没有构造与析构。迭代器是直接使用传递进来的类型定义指针。</p>
+<p>简单的看一下这个静态数组array源码：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t _Nm<span class="token operator">></span>
+<span class="token keyword">struct</span> array
+<span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> _Tp                           value_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> value_type<span class="token operator">&amp;</span>                             reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">const</span> value_type<span class="token operator">&amp;</span>                       const_reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> value_type<span class="token operator">*</span>                        iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">const</span> value_type<span class="token operator">*</span>                  const_iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>size_t                              size_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>ptrdiff_t                          difference_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>iterator<span class="token operator">></span>          reverse_iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>const_iterator<span class="token operator">></span>   const_reverse_iterator<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>里面使用<code>reverse_iterator</code>作为rbegin与rend操作的迭代器。<br>看上去上面一个迭代器，实际上两个，还有一个iterator,这个直接使用传递进来的类型定义指针，作为迭代器。</p>
+<p>可以将其对比为vector中的正向与反向迭代器。</p>
+<p>值得注意的是，在tr1::array中，支持传递数组大小为0，例如我们使用如下：</p>
+<pre><code>std::tr1::array&lt;int,0&gt; a;</code></pre><p>对于这样的写法，会对应到下面：</p>
+<pre><code>// Support for zero-sized arrays mandatory.
+value_type _M_instance[_Nm ? _Nm : 1];</code></pre><p>根据传递进来的大小，如果不为0，就是传递进来的大小，否则为1。</p>
+<h2 id="2-std-array"><a href="#2-std-array" class="headerlink" title="2.std::array"></a>2.std::array</h2><p>使用</p>
+<pre><code>std::array&lt;int ,10&gt; a;</code></pre><p>std中的array包含了</p>
+<p><img src="https://raw.githubusercontent.com/Light-City/cloudimg/master/std_array.png" alt="std_array.png"></p>
+<p>对比tr1与std的array</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t _Nm<span class="token operator">></span>
+<span class="token keyword">struct</span> array
+<span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> _Tp                           value_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> value_type<span class="token operator">*</span>                  pointer<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">const</span> value_type<span class="token operator">*</span>                       const_pointer<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> value_type<span class="token operator">&amp;</span>                             reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">const</span> value_type<span class="token operator">&amp;</span>                       const_reference<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> value_type<span class="token operator">*</span>                        iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> <span class="token keyword">const</span> value_type<span class="token operator">*</span>                  const_iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>size_t                              size_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>ptrdiff_t                             difference_type<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>iterator<span class="token operator">></span>          reverse_iterator<span class="token punctuation">;</span>
+    <span class="token keyword">typedef</span> std<span class="token operator">::</span>reverse_iterator<span class="token operator">&lt;</span>const_iterator<span class="token operator">></span>   const_reverse_iterator<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Support for zero-sized arrays mandatory.</span>
+    <span class="token keyword">typedef</span> _GLIBCXX_STD_C<span class="token operator">::</span>__array_traits<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Nm<span class="token operator">></span> _AT_Type<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// # define _GLIBCXX_STD_C std</span>
+    <span class="token keyword">typename</span> _AT_Type<span class="token operator">::</span>_Type                         _M_elems<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>发现array里面有两处值得注意的地方：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Support for zero-sized arrays mandatory.</span>
+<span class="token keyword">typedef</span> _GLIBCXX_STD_C<span class="token operator">::</span>__array_traits<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> _Nm<span class="token operator">></span> _AT_Type<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// # define _GLIBCXX_STD_C std</span>
+<span class="token keyword">typename</span> _AT_Type<span class="token operator">::</span>_Type                         _M_elems<span class="token punctuation">;</span></code></pre>
+<p>在源码中去找__array_traits，看到：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t _Nm<span class="token operator">></span>
+<span class="token keyword">struct</span> __array_traits
+<span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> _Tp _Type<span class="token punctuation">[</span>_Nm<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">constexpr</span> _Tp<span class="token operator">&amp;</span>
+    <span class="token function">_S_ref</span><span class="token punctuation">(</span><span class="token keyword">const</span> _Type<span class="token operator">&amp;</span> __t<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t __n<span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token keyword">const_cast</span><span class="token operator">&lt;</span>_Tp<span class="token operator">&amp;</span><span class="token operator">></span><span class="token punctuation">(</span>__t<span class="token punctuation">[</span>__n<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<p>上面两行的代码可以理解为下面：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> _Tp _Type<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> _Type _M_elems<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 一个含有100个元素的数组。</span></code></pre>
+<p>在实际写代码的时候，如果要定义一个数组，我们可以这样写：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">int</span> a<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//或者</span>
+<span class="token keyword">typedef</span> <span class="token keyword">int</span> T<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> T a<span class="token punctuation">;</span></code></pre>
+<p>针对传进来的size处理，相比于tr1，更加复杂，使用了模板偏特化来处理传递size为0情况。</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t _Nm<span class="token operator">></span>
+<span class="token keyword">struct</span> __array_traits
+<span class="token punctuation">{</span>
+    <span class="token keyword">typedef</span> _Tp _Type<span class="token punctuation">[</span>_Nm<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">constexpr</span> _Tp<span class="token operator">&amp;</span>
+    <span class="token function">_S_ref</span><span class="token punctuation">(</span><span class="token keyword">const</span> _Type<span class="token operator">&amp;</span> __t<span class="token punctuation">,</span> std<span class="token operator">::</span>size_t __n<span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token keyword">const_cast</span><span class="token operator">&lt;</span>_Tp<span class="token operator">&amp;</span><span class="token operator">></span><span class="token punctuation">(</span>__t<span class="token punctuation">[</span>__n<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">template</span><span class="token operator">&lt;</span><span class="token keyword">typename</span> _Tp<span class="token operator">></span>
+<span class="token keyword">struct</span> __array_traits<span class="token operator">&lt;</span>_Tp<span class="token punctuation">,</span> <span class="token number">0</span><span class="token operator">></span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> _Type <span class="token punctuation">{</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">constexpr</span> _Tp<span class="token operator">&amp;</span>
+    <span class="token function">_S_ref</span><span class="token punctuation">(</span><span class="token keyword">const</span> _Type<span class="token operator">&amp;</span><span class="token punctuation">,</span> std<span class="token operator">::</span>size_t<span class="token punctuation">)</span> <span class="token keyword">noexcept</span>
+    <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token operator">*</span><span class="token keyword">static_cast</span><span class="token operator">&lt;</span>_Tp<span class="token operator">*</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token keyword">nullptr</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
             if (!el.dataset.src) { return; }
@@ -640,8 +735,8 @@ npm install --save hexo-helper-live2d
                 </a>
             </div>
             <br/>
-            <a  href="/2019/10/12/zhu-ti-pei-zhi/">
-                    《主题修改》
+            <a  href="/2019/10/15/array/">
+                    《C++ STL源码剖析 tr1与std array》
             </a> 由
             <a href="http://light-city.club">
                 light-city
@@ -944,24 +1039,24 @@ npm install --save hexo-helper-live2d
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2019/10/13/vector/">
+                <a href="/2019/10/16/queue-stack/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="C++ STL源码剖析之动态数组vector">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="C++ STL源码剖析之容器配接器stack与queue、priority_queue">
                         
-                        <span class="card-title">C++ STL源码剖析之动态数组vector</span>
+                        <span class="card-title">C++ STL源码剖析之容器配接器stack与queue、priority_queue</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            C++ STL源码剖析之动态数组vector
+                            C++ STL源码剖析之容器配接器stack与queue、priority_queue
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-13
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-16
                         </span>
                         <span class="publish-author">
                             
@@ -1001,24 +1096,24 @@ npm install --save hexo-helper-live2d
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2019/10/12/ce-shi-gao-liang/">
+                <a href="/2019/10/13/er-fen-cha-zhao-fa/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="测试高亮">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="基于二分搜索法的floor与ceil">
                         
-                        <span class="card-title">测试高亮</span>
+                        <span class="card-title">基于二分搜索法的floor与ceil</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            测试高亮
+                            基于二分搜索法的floor与ceil
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-13
                             </span>
                         <span class="publish-author">
                             
@@ -1028,12 +1123,8 @@ npm install --save hexo-helper-live2d
                                     C++
                                 </a>
                             
-                            <a href="/categories/C/C/" class="post-category">
-                                    C
-                                </a>
-                            
-                            <a href="/categories/C/C/多线程/" class="post-category">
-                                    多线程
+                            <a href="/categories/C/算法/" class="post-category">
+                                    算法
                                 </a>
                             
                             
@@ -1047,8 +1138,8 @@ npm install --save hexo-helper-live2d
                         <span class="chip bg-color">C++</span>
                     </a>
                     
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C</span>
+                    <a href="/tags/二分搜索法/">
+                        <span class="chip bg-color">二分搜索法</span>
                     </a>
                     
                 </div>

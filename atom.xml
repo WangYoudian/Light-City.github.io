@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://light-city.club/"/>
-  <updated>2019-10-13T10:12:23.268Z</updated>
+  <updated>2019-10-16T06:45:07.191Z</updated>
   <id>http://light-city.club/</id>
   
   <author>
@@ -15,6 +15,99 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++ STL源码剖析之序列式容器deque</title>
+    <link href="http://light-city.club/2019/10/16/deque/"/>
+    <id>http://light-city.club/2019/10/16/deque/</id>
+    <published>2019-10-16T07:50:12.000Z</published>
+    <updated>2019-10-16T06:45:07.191Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL源码剖析之序列式容器deque&quot;&gt;&lt;a href=&quot;#C-STL源码剖析之序列式容器deque&quot; class=&quot;headerlink&quot; title=&quot;C++ STL源码剖析之序列式容器deque&quot;&gt;&lt;/a&gt;C++
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++ STL源码剖析之容器配接器stack与queue、priority_queue</title>
+    <link href="http://light-city.club/2019/10/16/queue-stack/"/>
+    <id>http://light-city.club/2019/10/16/queue-stack/</id>
+    <published>2019-10-16T06:50:12.000Z</published>
+    <updated>2019-10-16T06:44:41.047Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL源码剖析之容器配接器stack与queue、priority-queue&quot;&gt;&lt;a href=&quot;#C-STL源码剖析之容器配接器stack与queue、priority-queue&quot; class=&quot;headerlink&quot; title=&quot;C++
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++ STL源码剖析 tr1与std array</title>
+    <link href="http://light-city.club/2019/10/15/array/"/>
+    <id>http://light-city.club/2019/10/15/array/</id>
+    <published>2019-10-15T07:02:12.000Z</published>
+    <updated>2019-10-16T06:44:31.735Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL源码剖析-tr1与std-array&quot;&gt;&lt;a href=&quot;#C-STL源码剖析-tr1与std-array&quot; class=&quot;headerlink&quot; title=&quot;C++ STL源码剖析 tr1与std array&quot;&gt;&lt;/a&gt;C++ STL源码剖析
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
   
   <entry>
     <title>基于二分搜索法的floor与ceil</title>
