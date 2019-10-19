@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://light-city.club/"/>
-  <updated>2019-10-16T06:45:07.191Z</updated>
+  <updated>2019-10-19T06:44:37.654Z</updated>
   <id>http://light-city.club/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++ STL源码剖析之红黑树</title>
+    <link href="http://light-city.club/2019/10/19/rb-tree/"/>
+    <id>http://light-city.club/2019/10/19/rb-tree/</id>
+    <published>2019-10-19T06:45:12.000Z</published>
+    <updated>2019-10-19T06:44:37.654Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;C-STL源码剖析之红黑树&quot;&gt;&lt;a href=&quot;#C-STL源码剖析之红黑树&quot; class=&quot;headerlink&quot; title=&quot;C++ STL源码剖析之红黑树&quot;&gt;&lt;/a&gt;C++ STL源码剖析之红黑树&lt;/h1&gt;&lt;h2 id=&quot;0-导语&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
   
   <entry>
     <title>C++ STL源码剖析之序列式容器deque</title>
