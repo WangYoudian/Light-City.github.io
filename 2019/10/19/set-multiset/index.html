@@ -467,7 +467,7 @@
             <div id="articleContent">
                 <h1 id="C-STL源码剖析之set与multiset那些事"><a href="#C-STL源码剖析之set与multiset那些事" class="headerlink" title="C++ STL源码剖析之set与multiset那些事"></a>C++ STL源码剖析之set与multiset那些事</h1><p>set/multiset以rb_tree为底层结构，因此有元素自动排序特性。排序的依据是key，而set/multiset元素的value和key合二为一：value就是key。</p>
 <p>我们无法使用set/multiset的iterators改变元素值(因为key有其严谨排列规则)。<br>set/multiset的iterator是其底部RB tree的const-iterator，就是为了禁止用户对元素赋值。</p>
-<p>set元素的key必须独一无二，因此其insert使用的是rb_tree的<code>insert_unique()</code>，而multset元素的key可以重复，因此其insert使用的是rb_tree的<code>insert_equal()</code>。</p>
+<p>set元素的key必须独一无二，因此其insert使用的是rb_tree的<code>insert_unique()</code>，而multiset元素的key可以重复，因此其insert使用的是rb_tree的<code>insert_equal()</code>。</p>
 <h2 id="1-set"><a href="#1-set" class="headerlink" title="1.set"></a>1.set</h2><p>针对set源码比较简单，故从下面几个问题出发。</p>
 <blockquote>
 <p>第一个问题：key是value,value也是key。</p>
