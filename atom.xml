@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://light-city.club/"/>
-  <updated>2019-10-21T02:31:40.007Z</updated>
+  <updated>2019-10-21T07:52:52.651Z</updated>
   <id>http://light-city.club/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>STL设计之EBO(空基类优化)</title>
+    <link href="http://light-city.club/2019/10/20/tan-tan-stl-she-ji-zhi-ebo-you-hua/"/>
+    <id>http://light-city.club/2019/10/20/tan-tan-stl-she-ji-zhi-ebo-you-hua/</id>
+    <published>2019-10-20T07:52:31.000Z</published>
+    <updated>2019-10-21T07:52:52.651Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;STL设计之EBO-空基类优化&quot;&gt;&lt;a href=&quot;#STL设计之EBO-空基类优化&quot; class=&quot;headerlink&quot; title=&quot;STL设计之EBO(空基类优化)&quot;&gt;&lt;/a&gt;STL设计之EBO(空基类优化)&lt;/h1&gt;&lt;h2 id=&quot;0-导语&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="STL" scheme="http://light-city.club/categories/C/STL/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="源码" scheme="http://light-city.club/tags/%E6%BA%90%E7%A0%81/"/>
+    
+  </entry>
   
   <entry>
     <title>从0到1打牢算法基础之手写一个哈希表</title>
