@@ -110,11 +110,42 @@
   </entry>
   
   <entry>
+    <title>算法从0到1之trie(字典树)的增删改查(递归与非递归实现)</title>
+    <link href="http://light-city.club/2019/10/20/trie/"/>
+    <id>http://light-city.club/2019/10/20/trie/</id>
+    <published>2019-10-20T02:21:00.000Z</published>
+    <updated>2019-10-25T14:34:05.536Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;算法从0到1之trie-字典树-的增删改查-递归与非递归实现&quot;&gt;&lt;a href=&quot;#算法从0到1之trie-字典树-的增删改查-递归与非递归实现&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://light-city.club/categories/C/"/>
+    
+      <category term="Trie树" scheme="http://light-city.club/categories/C/Trie%E6%A0%91/"/>
+    
+    
+      <category term="C++" scheme="http://light-city.club/tags/C/"/>
+    
+      <category term="算法" scheme="http://light-city.club/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
     <title>从0到1打牢算法基础之手写一个哈希表</title>
     <link href="http://light-city.club/2019/10/20/myhashtable/"/>
     <id>http://light-city.club/2019/10/20/myhashtable/</id>
     <published>2019-10-20T02:21:00.000Z</published>
-    <updated>2019-10-21T02:31:40.007Z</updated>
+    <updated>2019-10-25T14:34:18.836Z</updated>
     
     <summary type="html">
     
@@ -136,7 +167,7 @@
     
       <category term="C++" scheme="http://light-city.club/tags/C/"/>
     
-      <category term="哈希表" scheme="http://light-city.club/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/"/>
+      <category term="算法" scheme="http://light-city.club/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
